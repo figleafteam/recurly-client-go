@@ -1,6 +1,7 @@
 package recurly
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -27,9 +28,18 @@ var (
 	// whe ncreating the client.
 	APIKey string
 
-	// Site is the default site identifier to use globally if not specified
+	// SiteID is the default site identifier to use globally if not specified
 	// when creating a new client.
-	Site SiteIdentifier
+	SiteID SiteIdentifier
+
+	// DefaultHTTPClient provides a default HTTP client for making HTTPS requests to Recurly
+	DefaultHTTPClient = &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse // disable redirects
+		},
+		Jar:     nil,
+		Timeout: 30 * time.Second,
+	}
 )
 
 // Client submits API requests to Recurly
@@ -59,17 +69,11 @@ func (id *SiteIdentifier) URLEncode() string {
 // DefaultClient returns the default API Client using the globally set Site and APIKey
 func DefaultClient() *Client {
 	return &Client{
-		apiKey:  APIKey,
-		baseURL: APIHost,
-		siteID:  Site,
-		Log:     NewLogger(LevelDebug),
-		HTTPClient: &http.Client{
-			CheckRedirect: func(req *http.Request, via []*http.Request) error {
-				return http.ErrUseLastResponse // disable redirects
-			},
-			Jar:     nil,
-			Timeout: 30 * time.Second,
-		},
+		apiKey:     APIKey,
+		baseURL:    APIHost,
+		siteID:     SiteID,
+		Log:        NewLogger(LevelDebug),
+		HTTPClient: DefaultHTTPClient,
 	}
 }
 
@@ -95,7 +99,27 @@ func (c *Client) Call(method string, path string, params Params, v interface{}) 
 	if !strings.HasPrefix(path, "/") {
 		path = "/" + path
 	}
-	path = fmt.Sprintf("%s/sites/%s%s", c.baseURL, c.siteID.URLEncode(), path)
+	if strings.HasPrefix(path, sitesRoot) {
+		path = fmt.Sprintf("%s%s", c.baseURL, path)
+	} else {
+		path = fmt.Sprintf("%s/sites/%s%s", c.baseURL, c.siteID.URLEncode(), path)
+	}
+
+	if params != nil {
+		// Append URL parameters
+		if keyValues := params.Options(); len(keyValues) > 0 {
+			var buf bytes.Buffer
+			for i, kv := range keyValues {
+				if i > 0 {
+					buf.WriteByte('&')
+				}
+				buf.WriteString(kv.Key)
+				buf.WriteByte('=')
+				buf.WriteString(url.QueryEscape(kv.Value))
+			}
+			path = fmt.Sprintf("%s?%s", path, buf.String())
+		}
+	}
 
 	req, err := c.NewRequest(http.MethodGet, path, params)
 	if err != nil {
@@ -128,8 +152,11 @@ func (c *Client) NewRequest(method string, url string, params Params) (*http.Req
 				req.Header.Set(key, value)
 			}
 		}
-		// TODO: Add URL parameters
 		// TODO: encode any body parameters
+
+		// if ctx := params.Context(); ctx != nil {
+		// 	req = req.WithContext(ctx)
+		// }
 	}
 
 	return req, nil
