@@ -71,22 +71,28 @@ func (list *ListSitesParams) URLParams() []KeyValue {
 
 // ListSites List sites
 // Returns: A list of sites.
-func (c *Client) ListSites(params *ListSitesParams) *SiteList {
-	path := "/sites"
+func (c *Client) ListSites(params *ListSitesParams) (*SiteList, error) {
+	path, err := c.InterpolatePath("/sites")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &SiteList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetSite Fetch a site
 // Returns: A site.
 func (c *Client) GetSite(siteId string) (*Site, error) {
-	path := c.InterpolatePath("/sites/{site_id}", siteId)
+	path, err := c.InterpolatePath("/sites/{site_id}", siteId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Site{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -190,22 +196,28 @@ func (list *ListAccountsParams) URLParams() []KeyValue {
 
 // ListAccounts List a site's accounts
 // Returns: A list of the site's accounts.
-func (c *Client) ListAccounts(params *ListAccountsParams) *AccountList {
-	path := "/accounts"
+func (c *Client) ListAccounts(params *ListAccountsParams) (*AccountList, error) {
+	path, err := c.InterpolatePath("/accounts")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &AccountList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreateAccount Create an account
 // Returns: An account.
 func (c *Client) CreateAccount(body *AccountCreate) (*Account, error) {
-	path := c.InterpolatePath("/accounts")
+	path, err := c.InterpolatePath("/accounts")
+	if err != nil {
+		return nil, err
+	}
 	result := &Account{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -215,9 +227,12 @@ func (c *Client) CreateAccount(body *AccountCreate) (*Account, error) {
 // GetAccount Fetch an account
 // Returns: An account.
 func (c *Client) GetAccount(accountId string) (*Account, error) {
-	path := c.InterpolatePath("/accounts/{account_id}", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Account{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -227,9 +242,12 @@ func (c *Client) GetAccount(accountId string) (*Account, error) {
 // UpdateAccount Modify an account
 // Returns: An account.
 func (c *Client) UpdateAccount(accountId string, body *AccountUpdate) (*Account, error) {
-	path := c.InterpolatePath("/accounts/{account_id}", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Account{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -239,9 +257,12 @@ func (c *Client) UpdateAccount(accountId string, body *AccountUpdate) (*Account,
 // DeactivateAccount Deactivate an account
 // Returns: An account.
 func (c *Client) DeactivateAccount(accountId string) (*Account, error) {
-	path := c.InterpolatePath("/accounts/{account_id}", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Account{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -251,9 +272,12 @@ func (c *Client) DeactivateAccount(accountId string) (*Account, error) {
 // GetAccountAcquisition Fetch an account's acquisition data
 // Returns: An account's acquisition data.
 func (c *Client) GetAccountAcquisition(accountId string) (*AccountAcquisition, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/acquisition", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/acquisition", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AccountAcquisition{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -263,9 +287,12 @@ func (c *Client) GetAccountAcquisition(accountId string) (*AccountAcquisition, e
 // UpdateAccountAcquisition Update an account's acquisition data
 // Returns: An account's updated acquisition data.
 func (c *Client) UpdateAccountAcquisition(accountId string, body *AccountAcquisitionUpdatable) (*AccountAcquisition, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/acquisition", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/acquisition", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AccountAcquisition{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -275,9 +302,12 @@ func (c *Client) UpdateAccountAcquisition(accountId string, body *AccountAcquisi
 // RemoveAccountAcquisition Remove an account's acquisition data
 // Returns: Acquisition data was succesfully deleted.
 func (c *Client) RemoveAccountAcquisition(accountId string) (*Empty, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/acquisition", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/acquisition", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Empty{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -287,9 +317,12 @@ func (c *Client) RemoveAccountAcquisition(accountId string) (*Empty, error) {
 // ReactivateAccount Reactivate an inactive account
 // Returns: An account.
 func (c *Client) ReactivateAccount(accountId string) (*Account, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/reactivate", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/reactivate", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Account{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -299,9 +332,12 @@ func (c *Client) ReactivateAccount(accountId string) (*Account, error) {
 // GetAccountBalance Fetch an account's balance and past due status
 // Returns: An account's balance.
 func (c *Client) GetAccountBalance(accountId string) (*AccountBalance, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/balance", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/balance", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AccountBalance{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -311,9 +347,12 @@ func (c *Client) GetAccountBalance(accountId string) (*AccountBalance, error) {
 // GetBillingInfo Fetch an account's billing information
 // Returns: An account's billing information.
 func (c *Client) GetBillingInfo(accountId string) (*BillingInfo, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/billing_info", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/billing_info", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &BillingInfo{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -323,9 +362,12 @@ func (c *Client) GetBillingInfo(accountId string) (*BillingInfo, error) {
 // UpdateBillingInfo Set an account's billing information
 // Returns: Updated billing information.
 func (c *Client) UpdateBillingInfo(accountId string, body *BillingInfoCreate) (*BillingInfo, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/billing_info", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/billing_info", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &BillingInfo{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -335,9 +377,12 @@ func (c *Client) UpdateBillingInfo(accountId string, body *BillingInfoCreate) (*
 // RemoveBillingInfo Remove an account's billing information
 // Returns: Billing information deleted
 func (c *Client) RemoveBillingInfo(accountId string) (*Empty, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/billing_info", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/billing_info", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Empty{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -405,22 +450,28 @@ func (list *ListAccountCouponRedemptionsParams) URLParams() []KeyValue {
 
 // ListAccountCouponRedemptions Show the coupon redemptions for an account
 // Returns: A list of the the coupon redemptions on an account.
-func (c *Client) ListAccountCouponRedemptions(accountId string, params *ListAccountCouponRedemptionsParams) *CouponRedemptionList {
-	path := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions", accountId)
+func (c *Client) ListAccountCouponRedemptions(accountId string, params *ListAccountCouponRedemptionsParams) (*CouponRedemptionList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &CouponRedemptionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetActiveCouponRedemption Show the coupon redemption that is active on an account
 // Returns: An active coupon redemption on an account.
 func (c *Client) GetActiveCouponRedemption(accountId string) (*CouponRedemption, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions/active", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions/active", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &CouponRedemption{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -430,9 +481,12 @@ func (c *Client) GetActiveCouponRedemption(accountId string) (*CouponRedemption,
 // CreateCouponRedemption Generate an active coupon redemption on an account
 // Returns: Returns the new coupon redemption.
 func (c *Client) CreateCouponRedemption(accountId string, body *CouponRedemptionCreate) (*CouponRedemption, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions/active", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions/active", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &CouponRedemption{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -442,9 +496,12 @@ func (c *Client) CreateCouponRedemption(accountId string, body *CouponRedemption
 // RemoveCouponRedemption Delete the active coupon redemption from an account
 // Returns: Coupon redemption deleted.
 func (c *Client) RemoveCouponRedemption(accountId string) (*CouponRedemption, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions/active", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/coupon_redemptions/active", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &CouponRedemption{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -511,14 +568,17 @@ func (list *ListAccountCreditPaymentsParams) URLParams() []KeyValue {
 
 // ListAccountCreditPayments List an account's credit payments
 // Returns: A list of the account's credit payments.
-func (c *Client) ListAccountCreditPayments(accountId string, params *ListAccountCreditPaymentsParams) *CreditPaymentList {
-	path := c.InterpolatePath("/accounts/{account_id}/credit_payments", accountId)
+func (c *Client) ListAccountCreditPayments(accountId string, params *ListAccountCreditPaymentsParams) (*CreditPaymentList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/credit_payments", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &CreditPaymentList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListAccountInvoicesParams struct {
@@ -607,22 +667,28 @@ func (list *ListAccountInvoicesParams) URLParams() []KeyValue {
 
 // ListAccountInvoices List an account's invoices
 // Returns: A list of the account's invoices.
-func (c *Client) ListAccountInvoices(accountId string, params *ListAccountInvoicesParams) *InvoiceList {
-	path := c.InterpolatePath("/accounts/{account_id}/invoices", accountId)
+func (c *Client) ListAccountInvoices(accountId string, params *ListAccountInvoicesParams) (*InvoiceList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/invoices", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &InvoiceList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreateInvoice Create an invoice for pending line items
 // Returns: Returns the new invoices.
 func (c *Client) CreateInvoice(accountId string, body *InvoiceCreate) (*InvoiceCollection, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/invoices", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/invoices", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &InvoiceCollection{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -632,9 +698,12 @@ func (c *Client) CreateInvoice(accountId string, body *InvoiceCreate) (*InvoiceC
 // PreviewInvoice Preview new invoice for pending line items
 // Returns: Returns the invoice previews.
 func (c *Client) PreviewInvoice(accountId string, body *InvoiceCreate) (*InvoiceCollection, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/invoices/preview", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/invoices/preview", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &InvoiceCollection{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -737,22 +806,28 @@ func (list *ListAccountLineItemsParams) URLParams() []KeyValue {
 
 // ListAccountLineItems List an account's line items
 // Returns: A list of the account's line items.
-func (c *Client) ListAccountLineItems(accountId string, params *ListAccountLineItemsParams) *LineItemList {
-	path := c.InterpolatePath("/accounts/{account_id}/line_items", accountId)
+func (c *Client) ListAccountLineItems(accountId string, params *ListAccountLineItemsParams) (*LineItemList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/line_items", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &LineItemList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreateLineItem Create a new line item for the account
 // Returns: Returns the new line item.
 func (c *Client) CreateLineItem(accountId string, body *LineItemCreate) (*LineItem, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/line_items", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/line_items", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &LineItem{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -795,22 +870,28 @@ func (list *ListAccountNotesParams) URLParams() []KeyValue {
 
 // ListAccountNotes Fetch a list of an account's notes
 // Returns: A list of an account's notes.
-func (c *Client) ListAccountNotes(accountId string, params *ListAccountNotesParams) *AccountNoteList {
-	path := c.InterpolatePath("/accounts/{account_id}/notes", accountId)
+func (c *Client) ListAccountNotes(accountId string, params *ListAccountNotesParams) (*AccountNoteList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/notes", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &AccountNoteList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetAccountNote Fetch an account note
 // Returns: An account note.
 func (c *Client) GetAccountNote(accountId string, accountNoteId string) (*AccountNote, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/notes/{account_note_id}", accountId, accountNoteId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/notes/{account_note_id}", accountId, accountNoteId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AccountNote{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -892,22 +973,28 @@ func (list *ListShippingAddressesParams) URLParams() []KeyValue {
 
 // ListShippingAddresses Fetch a list of an account's shipping addresses
 // Returns: A list of an account's shipping addresses.
-func (c *Client) ListShippingAddresses(accountId string, params *ListShippingAddressesParams) *ShippingAddressList {
-	path := c.InterpolatePath("/accounts/{account_id}/shipping_addresses", accountId)
+func (c *Client) ListShippingAddresses(accountId string, params *ListShippingAddressesParams) (*ShippingAddressList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/shipping_addresses", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &ShippingAddressList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreateShippingAddress Create a new shipping address for the account
 // Returns: Returns the new shipping address.
 func (c *Client) CreateShippingAddress(accountId string, body *ShippingAddressCreate) (*ShippingAddress, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/shipping_addresses", accountId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/shipping_addresses", accountId)
+	if err != nil {
+		return nil, err
+	}
 	result := &ShippingAddress{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -917,9 +1004,12 @@ func (c *Client) CreateShippingAddress(accountId string, body *ShippingAddressCr
 // GetShippingAddress Fetch an account's shipping address
 // Returns: A shipping address.
 func (c *Client) GetShippingAddress(accountId string, shippingAddressId string) (*ShippingAddress, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/shipping_addresses/{shipping_address_id}", accountId, shippingAddressId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/shipping_addresses/{shipping_address_id}", accountId, shippingAddressId)
+	if err != nil {
+		return nil, err
+	}
 	result := &ShippingAddress{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -929,9 +1019,12 @@ func (c *Client) GetShippingAddress(accountId string, shippingAddressId string) 
 // UpdateShippingAddress Update an account's shipping address
 // Returns: The updated shipping address.
 func (c *Client) UpdateShippingAddress(accountId string, shippingAddressId string, body *ShippingAddressUpdate) (*ShippingAddress, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/shipping_addresses/{shipping_address_id}", accountId, shippingAddressId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/shipping_addresses/{shipping_address_id}", accountId, shippingAddressId)
+	if err != nil {
+		return nil, err
+	}
 	result := &ShippingAddress{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -941,9 +1034,12 @@ func (c *Client) UpdateShippingAddress(accountId string, shippingAddressId strin
 // RemoveShippingAddress Remove an account's shipping address
 // Returns: Shipping address deleted.
 func (c *Client) RemoveShippingAddress(accountId string, shippingAddressId string) (*Empty, error) {
-	path := c.InterpolatePath("/accounts/{account_id}/shipping_addresses/{shipping_address_id}", accountId, shippingAddressId)
+	path, err := c.InterpolatePath("/accounts/{account_id}/shipping_addresses/{shipping_address_id}", accountId, shippingAddressId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Empty{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1035,14 +1131,17 @@ func (list *ListAccountSubscriptionsParams) URLParams() []KeyValue {
 
 // ListAccountSubscriptions List an account's subscriptions
 // Returns: A list of the account's subscriptions.
-func (c *Client) ListAccountSubscriptions(accountId string, params *ListAccountSubscriptionsParams) *SubscriptionList {
-	path := c.InterpolatePath("/accounts/{account_id}/subscriptions", accountId)
+func (c *Client) ListAccountSubscriptions(accountId string, params *ListAccountSubscriptionsParams) (*SubscriptionList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/subscriptions", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &SubscriptionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListAccountTransactionsParams struct {
@@ -1134,14 +1233,17 @@ func (list *ListAccountTransactionsParams) URLParams() []KeyValue {
 
 // ListAccountTransactions List an account's transactions
 // Returns: A list of the account's transactions.
-func (c *Client) ListAccountTransactions(accountId string, params *ListAccountTransactionsParams) *TransactionList {
-	path := c.InterpolatePath("/accounts/{account_id}/transactions", accountId)
+func (c *Client) ListAccountTransactions(accountId string, params *ListAccountTransactionsParams) (*TransactionList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/transactions", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &TransactionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListChildAccountsParams struct {
@@ -1241,14 +1343,17 @@ func (list *ListChildAccountsParams) URLParams() []KeyValue {
 
 // ListChildAccounts List an account's child accounts
 // Returns: A list of an account's child accounts.
-func (c *Client) ListChildAccounts(accountId string, params *ListChildAccountsParams) *AccountList {
-	path := c.InterpolatePath("/accounts/{account_id}/accounts", accountId)
+func (c *Client) ListChildAccounts(accountId string, params *ListChildAccountsParams) (*AccountList, error) {
+	path, err := c.InterpolatePath("/accounts/{account_id}/accounts", accountId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &AccountList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListAccountAcquisitionParams struct {
@@ -1326,14 +1431,17 @@ func (list *ListAccountAcquisitionParams) URLParams() []KeyValue {
 
 // ListAccountAcquisition List a site's account acquisition data
 // Returns: A list of the site's account acquisition data.
-func (c *Client) ListAccountAcquisition(params *ListAccountAcquisitionParams) *AccountAcquisitionList {
-	path := "/acquisitions"
+func (c *Client) ListAccountAcquisition(params *ListAccountAcquisitionParams) (*AccountAcquisitionList, error) {
+	path, err := c.InterpolatePath("/acquisitions")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &AccountAcquisitionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListCouponsParams struct {
@@ -1411,22 +1519,28 @@ func (list *ListCouponsParams) URLParams() []KeyValue {
 
 // ListCoupons List a site's coupons
 // Returns: A list of the site's coupons.
-func (c *Client) ListCoupons(params *ListCouponsParams) *CouponList {
-	path := "/coupons"
+func (c *Client) ListCoupons(params *ListCouponsParams) (*CouponList, error) {
+	path, err := c.InterpolatePath("/coupons")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &CouponList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreateCoupon Create a new coupon
 // Returns: A new coupon.
 func (c *Client) CreateCoupon(body *CouponCreate) (*Coupon, error) {
-	path := c.InterpolatePath("/coupons")
+	path, err := c.InterpolatePath("/coupons")
+	if err != nil {
+		return nil, err
+	}
 	result := &Coupon{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1436,9 +1550,12 @@ func (c *Client) CreateCoupon(body *CouponCreate) (*Coupon, error) {
 // GetCoupon Fetch a coupon
 // Returns: A coupon.
 func (c *Client) GetCoupon(couponId string) (*Coupon, error) {
-	path := c.InterpolatePath("/coupons/{coupon_id}", couponId)
+	path, err := c.InterpolatePath("/coupons/{coupon_id}", couponId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Coupon{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1448,9 +1565,12 @@ func (c *Client) GetCoupon(couponId string) (*Coupon, error) {
 // UpdateCoupon Update an active coupon
 // Returns: The updated coupon.
 func (c *Client) UpdateCoupon(couponId string, body *CouponUpdate) (*Coupon, error) {
-	path := c.InterpolatePath("/coupons/{coupon_id}", couponId)
+	path, err := c.InterpolatePath("/coupons/{coupon_id}", couponId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Coupon{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1460,9 +1580,12 @@ func (c *Client) UpdateCoupon(couponId string, body *CouponUpdate) (*Coupon, err
 // DeactivateCoupon Expire a coupon
 // Returns: The expired Coupon
 func (c *Client) DeactivateCoupon(couponId string) (*Coupon, error) {
-	path := c.InterpolatePath("/coupons/{coupon_id}", couponId)
+	path, err := c.InterpolatePath("/coupons/{coupon_id}", couponId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Coupon{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1544,14 +1667,17 @@ func (list *ListUniqueCouponCodesParams) URLParams() []KeyValue {
 
 // ListUniqueCouponCodes List unique coupon codes associated with a bulk coupon
 // Returns: A list of unique coupon codes that were generated
-func (c *Client) ListUniqueCouponCodes(couponId string, params *ListUniqueCouponCodesParams) *UniqueCouponCodeList {
-	path := c.InterpolatePath("/coupons/{coupon_id}/unique_coupon_codes", couponId)
+func (c *Client) ListUniqueCouponCodes(couponId string, params *ListUniqueCouponCodesParams) (*UniqueCouponCodeList, error) {
+	path, err := c.InterpolatePath("/coupons/{coupon_id}/unique_coupon_codes", couponId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &UniqueCouponCodeList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListCreditPaymentsParams struct {
@@ -1614,22 +1740,28 @@ func (list *ListCreditPaymentsParams) URLParams() []KeyValue {
 
 // ListCreditPayments List a site's credit payments
 // Returns: A list of the site's credit payments.
-func (c *Client) ListCreditPayments(params *ListCreditPaymentsParams) *CreditPaymentList {
-	path := "/credit_payments"
+func (c *Client) ListCreditPayments(params *ListCreditPaymentsParams) (*CreditPaymentList, error) {
+	path, err := c.InterpolatePath("/credit_payments")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &CreditPaymentList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetCreditPayment Fetch a credit payment
 // Returns: A credit payment.
 func (c *Client) GetCreditPayment(creditPaymentId string) (*CreditPayment, error) {
-	path := c.InterpolatePath("/credit_payments/{credit_payment_id}", creditPaymentId)
+	path, err := c.InterpolatePath("/credit_payments/{credit_payment_id}", creditPaymentId)
+	if err != nil {
+		return nil, err
+	}
 	result := &CreditPayment{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1718,22 +1850,28 @@ func (list *ListCustomFieldDefinitionsParams) URLParams() []KeyValue {
 
 // ListCustomFieldDefinitions List a site's custom field definitions
 // Returns: A list of the site's custom field definitions.
-func (c *Client) ListCustomFieldDefinitions(params *ListCustomFieldDefinitionsParams) *CustomFieldDefinitionList {
-	path := "/custom_field_definitions"
+func (c *Client) ListCustomFieldDefinitions(params *ListCustomFieldDefinitionsParams) (*CustomFieldDefinitionList, error) {
+	path, err := c.InterpolatePath("/custom_field_definitions")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &CustomFieldDefinitionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetCustomFieldDefinition Fetch an custom field definition
 // Returns: An custom field definition.
 func (c *Client) GetCustomFieldDefinition(customFieldDefinitionId string) (*CustomFieldDefinition, error) {
-	path := c.InterpolatePath("/custom_field_definitions/{custom_field_definition_id}", customFieldDefinitionId)
+	path, err := c.InterpolatePath("/custom_field_definitions/{custom_field_definition_id}", customFieldDefinitionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &CustomFieldDefinition{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1822,22 +1960,28 @@ func (list *ListItemsParams) URLParams() []KeyValue {
 
 // ListItems List a site's items
 // Returns: A list of the site's items.
-func (c *Client) ListItems(params *ListItemsParams) *ItemList {
-	path := "/items"
+func (c *Client) ListItems(params *ListItemsParams) (*ItemList, error) {
+	path, err := c.InterpolatePath("/items")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &ItemList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreateItem Create a new item
 // Returns: A new item.
 func (c *Client) CreateItem(body *ItemCreate) (*Item, error) {
-	path := c.InterpolatePath("/items")
+	path, err := c.InterpolatePath("/items")
+	if err != nil {
+		return nil, err
+	}
 	result := &Item{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1847,9 +1991,12 @@ func (c *Client) CreateItem(body *ItemCreate) (*Item, error) {
 // GetItem Fetch an item
 // Returns: An item.
 func (c *Client) GetItem(itemId string) (*Item, error) {
-	path := c.InterpolatePath("/items/{item_id}", itemId)
+	path, err := c.InterpolatePath("/items/{item_id}", itemId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Item{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1859,9 +2006,12 @@ func (c *Client) GetItem(itemId string) (*Item, error) {
 // UpdateItem Update an active item
 // Returns: The updated item.
 func (c *Client) UpdateItem(itemId string, body *ItemUpdate) (*Item, error) {
-	path := c.InterpolatePath("/items/{item_id}", itemId)
+	path, err := c.InterpolatePath("/items/{item_id}", itemId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Item{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1871,9 +2021,12 @@ func (c *Client) UpdateItem(itemId string, body *ItemUpdate) (*Item, error) {
 // DeactivateItem Deactivate an item
 // Returns: An item.
 func (c *Client) DeactivateItem(itemId string) (*Item, error) {
-	path := c.InterpolatePath("/items/{item_id}", itemId)
+	path, err := c.InterpolatePath("/items/{item_id}", itemId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Item{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1883,9 +2036,12 @@ func (c *Client) DeactivateItem(itemId string) (*Item, error) {
 // ReactivateItem Reactivate an inactive item
 // Returns: An item.
 func (c *Client) ReactivateItem(itemId string) (*Item, error) {
-	path := c.InterpolatePath("/items/{item_id}/reactivate", itemId)
+	path, err := c.InterpolatePath("/items/{item_id}/reactivate", itemId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Item{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -1978,22 +2134,28 @@ func (list *ListInvoicesParams) URLParams() []KeyValue {
 
 // ListInvoices List a site's invoices
 // Returns: A list of the site's invoices.
-func (c *Client) ListInvoices(params *ListInvoicesParams) *InvoiceList {
-	path := "/invoices"
+func (c *Client) ListInvoices(params *ListInvoicesParams) (*InvoiceList, error) {
+	path, err := c.InterpolatePath("/invoices")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &InvoiceList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetInvoice Fetch an invoice
 // Returns: An invoice.
 func (c *Client) GetInvoice(invoiceId string) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2003,9 +2165,12 @@ func (c *Client) GetInvoice(invoiceId string) (*Invoice, error) {
 // PutInvoice Update an invoice
 // Returns: An invoice.
 func (c *Client) PutInvoice(invoiceId string, body *InvoiceUpdatable) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2031,9 +2196,12 @@ func (list *CollectInvoiceParams) toParams() *Params {
 // CollectInvoice Collect a pending or past due, automatic invoice
 // Returns: The updated invoice.
 func (c *Client) CollectInvoice(invoiceId string, params *CollectInvoiceParams) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}/collect", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/collect", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodPut, path, params, result)
+	err = c.Call(http.MethodPut, path, params, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2043,9 +2211,12 @@ func (c *Client) CollectInvoice(invoiceId string, params *CollectInvoiceParams) 
 // FailInvoice Mark an open invoice as failed
 // Returns: The updated invoice.
 func (c *Client) FailInvoice(invoiceId string) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}/mark_failed", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/mark_failed", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2055,9 +2226,12 @@ func (c *Client) FailInvoice(invoiceId string) (*Invoice, error) {
 // MarkInvoiceSuccessful Mark an open invoice as successful
 // Returns: The updated invoice.
 func (c *Client) MarkInvoiceSuccessful(invoiceId string) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}/mark_successful", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/mark_successful", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2067,9 +2241,12 @@ func (c *Client) MarkInvoiceSuccessful(invoiceId string) (*Invoice, error) {
 // ReopenInvoice Reopen a closed, manual invoice
 // Returns: The updated invoice.
 func (c *Client) ReopenInvoice(invoiceId string) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}/reopen", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/reopen", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2079,9 +2256,12 @@ func (c *Client) ReopenInvoice(invoiceId string) (*Invoice, error) {
 // VoidInvoice Void a credit invoice.
 // Returns: The updated invoice.
 func (c *Client) VoidInvoice(invoiceId string) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}/void", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/void", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2184,14 +2364,17 @@ func (list *ListInvoiceLineItemsParams) URLParams() []KeyValue {
 
 // ListInvoiceLineItems List an invoice's line items
 // Returns: A list of the invoice's line items.
-func (c *Client) ListInvoiceLineItems(invoiceId string, params *ListInvoiceLineItemsParams) *LineItemList {
-	path := c.InterpolatePath("/invoices/{invoice_id}/line_items", invoiceId)
+func (c *Client) ListInvoiceLineItems(invoiceId string, params *ListInvoiceLineItemsParams) (*LineItemList, error) {
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/line_items", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &LineItemList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListInvoiceCouponRedemptionsParams struct {
@@ -2255,33 +2438,42 @@ func (list *ListInvoiceCouponRedemptionsParams) URLParams() []KeyValue {
 
 // ListInvoiceCouponRedemptions Show the coupon redemptions applied to an invoice
 // Returns: A list of the the coupon redemptions associated with the invoice.
-func (c *Client) ListInvoiceCouponRedemptions(invoiceId string, params *ListInvoiceCouponRedemptionsParams) *CouponRedemptionList {
-	path := c.InterpolatePath("/invoices/{invoice_id}/coupon_redemptions", invoiceId)
+func (c *Client) ListInvoiceCouponRedemptions(invoiceId string, params *ListInvoiceCouponRedemptionsParams) (*CouponRedemptionList, error) {
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/coupon_redemptions", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &CouponRedemptionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // ListRelatedInvoices List an invoice's related credit or charge invoices
 // Returns: A list of the credit or charge invoices associated with the invoice.
-func (c *Client) ListRelatedInvoices(invoiceId string) *InvoiceList {
-	path := c.InterpolatePath("/invoices/{invoice_id}/related_invoices", invoiceId)
+func (c *Client) ListRelatedInvoices(invoiceId string) (*InvoiceList, error) {
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/related_invoices", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	return &InvoiceList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // RefundInvoice Refund an invoice
 // Returns: Returns the new credit invoice.
 func (c *Client) RefundInvoice(invoiceId string, body *InvoiceRefund) (*Invoice, error) {
-	path := c.InterpolatePath("/invoices/{invoice_id}/refund", invoiceId)
+	path, err := c.InterpolatePath("/invoices/{invoice_id}/refund", invoiceId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Invoice{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2384,22 +2576,28 @@ func (list *ListLineItemsParams) URLParams() []KeyValue {
 
 // ListLineItems List a site's line items
 // Returns: A list of the site's line items.
-func (c *Client) ListLineItems(params *ListLineItemsParams) *LineItemList {
-	path := "/line_items"
+func (c *Client) ListLineItems(params *ListLineItemsParams) (*LineItemList, error) {
+	path, err := c.InterpolatePath("/line_items")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &LineItemList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetLineItem Fetch a line item
 // Returns: A line item.
 func (c *Client) GetLineItem(lineItemId string) (*LineItem, error) {
-	path := c.InterpolatePath("/line_items/{line_item_id}", lineItemId)
+	path, err := c.InterpolatePath("/line_items/{line_item_id}", lineItemId)
+	if err != nil {
+		return nil, err
+	}
 	result := &LineItem{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2409,9 +2607,12 @@ func (c *Client) GetLineItem(lineItemId string) (*LineItem, error) {
 // RemoveLineItem Delete an uninvoiced line item
 // Returns: Line item deleted.
 func (c *Client) RemoveLineItem(lineItemId string) (*Empty, error) {
-	path := c.InterpolatePath("/line_items/{line_item_id}", lineItemId)
+	path, err := c.InterpolatePath("/line_items/{line_item_id}", lineItemId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Empty{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2500,22 +2701,28 @@ func (list *ListPlansParams) URLParams() []KeyValue {
 
 // ListPlans List a site's plans
 // Returns: A list of plans.
-func (c *Client) ListPlans(params *ListPlansParams) *PlanList {
-	path := "/plans"
+func (c *Client) ListPlans(params *ListPlansParams) (*PlanList, error) {
+	path, err := c.InterpolatePath("/plans")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &PlanList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreatePlan Create a plan
 // Returns: A plan.
 func (c *Client) CreatePlan(body *PlanCreate) (*Plan, error) {
-	path := c.InterpolatePath("/plans")
+	path, err := c.InterpolatePath("/plans")
+	if err != nil {
+		return nil, err
+	}
 	result := &Plan{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2525,9 +2732,12 @@ func (c *Client) CreatePlan(body *PlanCreate) (*Plan, error) {
 // GetPlan Fetch a plan
 // Returns: A plan.
 func (c *Client) GetPlan(planId string) (*Plan, error) {
-	path := c.InterpolatePath("/plans/{plan_id}", planId)
+	path, err := c.InterpolatePath("/plans/{plan_id}", planId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Plan{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2537,9 +2747,12 @@ func (c *Client) GetPlan(planId string) (*Plan, error) {
 // UpdatePlan Update a plan
 // Returns: A plan.
 func (c *Client) UpdatePlan(planId string, body *PlanUpdate) (*Plan, error) {
-	path := c.InterpolatePath("/plans/{plan_id}", planId)
+	path, err := c.InterpolatePath("/plans/{plan_id}", planId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Plan{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2549,9 +2762,12 @@ func (c *Client) UpdatePlan(planId string, body *PlanUpdate) (*Plan, error) {
 // RemovePlan Remove a plan
 // Returns: Plan deleted
 func (c *Client) RemovePlan(planId string) (*Plan, error) {
-	path := c.InterpolatePath("/plans/{plan_id}", planId)
+	path, err := c.InterpolatePath("/plans/{plan_id}", planId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Plan{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2640,22 +2856,28 @@ func (list *ListPlanAddOnsParams) URLParams() []KeyValue {
 
 // ListPlanAddOns List a plan's add-ons
 // Returns: A list of add-ons.
-func (c *Client) ListPlanAddOns(planId string, params *ListPlanAddOnsParams) *AddOnList {
-	path := c.InterpolatePath("/plans/{plan_id}/add_ons", planId)
+func (c *Client) ListPlanAddOns(planId string, params *ListPlanAddOnsParams) (*AddOnList, error) {
+	path, err := c.InterpolatePath("/plans/{plan_id}/add_ons", planId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &AddOnList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreatePlanAddOn Create an add-on
 // Returns: An add-on.
 func (c *Client) CreatePlanAddOn(planId string, body *AddOnCreate) (*AddOn, error) {
-	path := c.InterpolatePath("/plans/{plan_id}/add_ons", planId)
+	path, err := c.InterpolatePath("/plans/{plan_id}/add_ons", planId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AddOn{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2665,9 +2887,12 @@ func (c *Client) CreatePlanAddOn(planId string, body *AddOnCreate) (*AddOn, erro
 // GetPlanAddOn Fetch a plan's add-on
 // Returns: An add-on.
 func (c *Client) GetPlanAddOn(planId string, addOnId string) (*AddOn, error) {
-	path := c.InterpolatePath("/plans/{plan_id}/add_ons/{add_on_id}", planId, addOnId)
+	path, err := c.InterpolatePath("/plans/{plan_id}/add_ons/{add_on_id}", planId, addOnId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AddOn{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2677,9 +2902,12 @@ func (c *Client) GetPlanAddOn(planId string, addOnId string) (*AddOn, error) {
 // UpdatePlanAddOn Update an add-on
 // Returns: An add-on.
 func (c *Client) UpdatePlanAddOn(planId string, addOnId string, body *AddOnUpdate) (*AddOn, error) {
-	path := c.InterpolatePath("/plans/{plan_id}/add_ons/{add_on_id}", planId, addOnId)
+	path, err := c.InterpolatePath("/plans/{plan_id}/add_ons/{add_on_id}", planId, addOnId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AddOn{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2689,9 +2917,12 @@ func (c *Client) UpdatePlanAddOn(planId string, addOnId string, body *AddOnUpdat
 // RemovePlanAddOn Remove an add-on
 // Returns: Add-on deleted
 func (c *Client) RemovePlanAddOn(planId string, addOnId string) (*AddOn, error) {
-	path := c.InterpolatePath("/plans/{plan_id}/add_ons/{add_on_id}", planId, addOnId)
+	path, err := c.InterpolatePath("/plans/{plan_id}/add_ons/{add_on_id}", planId, addOnId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AddOn{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2780,22 +3011,28 @@ func (list *ListAddOnsParams) URLParams() []KeyValue {
 
 // ListAddOns List a site's add-ons
 // Returns: A list of add-ons.
-func (c *Client) ListAddOns(params *ListAddOnsParams) *AddOnList {
-	path := "/add_ons"
+func (c *Client) ListAddOns(params *ListAddOnsParams) (*AddOnList, error) {
+	path, err := c.InterpolatePath("/add_ons")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &AddOnList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetAddOn Fetch an add-on
 // Returns: An add-on.
 func (c *Client) GetAddOn(addOnId string) (*AddOn, error) {
-	path := c.InterpolatePath("/add_ons/{add_on_id}", addOnId)
+	path, err := c.InterpolatePath("/add_ons/{add_on_id}", addOnId)
+	if err != nil {
+		return nil, err
+	}
 	result := &AddOn{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2877,22 +3114,28 @@ func (list *ListShippingMethodsParams) URLParams() []KeyValue {
 
 // ListShippingMethods List a site's shipping methods
 // Returns: A list of the site's shipping methods.
-func (c *Client) ListShippingMethods(params *ListShippingMethodsParams) *ShippingMethodList {
-	path := "/shipping_methods"
+func (c *Client) ListShippingMethods(params *ListShippingMethodsParams) (*ShippingMethodList, error) {
+	path, err := c.InterpolatePath("/shipping_methods")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &ShippingMethodList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetShippingMethod Fetch a shipping method
 // Returns: A shipping_method.
 func (c *Client) GetShippingMethod(id string) (*ShippingMethod, error) {
-	path := c.InterpolatePath("/shipping_methods/{id}", id)
+	path, err := c.InterpolatePath("/shipping_methods/{id}", id)
+	if err != nil {
+		return nil, err
+	}
 	result := &ShippingMethod{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -2984,22 +3227,28 @@ func (list *ListSubscriptionsParams) URLParams() []KeyValue {
 
 // ListSubscriptions List a site's subscriptions
 // Returns: A list of the site's subscriptions.
-func (c *Client) ListSubscriptions(params *ListSubscriptionsParams) *SubscriptionList {
-	path := "/subscriptions"
+func (c *Client) ListSubscriptions(params *ListSubscriptionsParams) (*SubscriptionList, error) {
+	path, err := c.InterpolatePath("/subscriptions")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &SubscriptionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // CreateSubscription Create a new subscription
 // Returns: A subscription.
 func (c *Client) CreateSubscription(body *SubscriptionCreate) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions")
+	path, err := c.InterpolatePath("/subscriptions")
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3009,9 +3258,12 @@ func (c *Client) CreateSubscription(body *SubscriptionCreate) (*Subscription, er
 // GetSubscription Fetch a subscription
 // Returns: A subscription.
 func (c *Client) GetSubscription(subscriptionId string) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3021,9 +3273,12 @@ func (c *Client) GetSubscription(subscriptionId string) (*Subscription, error) {
 // ModifySubscription Modify a subscription
 // Returns: A subscription.
 func (c *Client) ModifySubscription(subscriptionId string, body *SubscriptionUpdate) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3064,9 +3319,12 @@ func (list *TerminateSubscriptionParams) URLParams() []KeyValue {
 // TerminateSubscription Terminate a subscription
 // Returns: An expired subscription.
 func (c *Client) TerminateSubscription(subscriptionId string, params *TerminateSubscriptionParams) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodDelete, path, params, result)
+	err = c.Call(http.MethodDelete, path, params, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3092,9 +3350,12 @@ func (list *CancelSubscriptionParams) toParams() *Params {
 // CancelSubscription Cancel a subscription
 // Returns: A canceled or failed subscription.
 func (c *Client) CancelSubscription(subscriptionId string, params *CancelSubscriptionParams) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/cancel", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/cancel", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodPut, path, params, result)
+	err = c.Call(http.MethodPut, path, params, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3104,9 +3365,12 @@ func (c *Client) CancelSubscription(subscriptionId string, params *CancelSubscri
 // ReactivateSubscription Reactivate a canceled subscription
 // Returns: An active subscription.
 func (c *Client) ReactivateSubscription(subscriptionId string) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/reactivate", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/reactivate", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3116,9 +3380,12 @@ func (c *Client) ReactivateSubscription(subscriptionId string) (*Subscription, e
 // PauseSubscription Pause subscription
 // Returns: A subscription.
 func (c *Client) PauseSubscription(subscriptionId string, body *SubscriptionPause) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/pause", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/pause", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodPut, path, body, result)
+	err = c.Call(http.MethodPut, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3128,9 +3395,12 @@ func (c *Client) PauseSubscription(subscriptionId string, body *SubscriptionPaus
 // ResumeSubscription Resume subscription
 // Returns: A subscription.
 func (c *Client) ResumeSubscription(subscriptionId string) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/resume", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/resume", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3140,9 +3410,12 @@ func (c *Client) ResumeSubscription(subscriptionId string) (*Subscription, error
 // ConvertTrial Convert trial subscription
 // Returns: A subscription.
 func (c *Client) ConvertTrial(subscriptionId string) (*Subscription, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/convert_trial", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/convert_trial", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Subscription{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3152,9 +3425,12 @@ func (c *Client) ConvertTrial(subscriptionId string) (*Subscription, error) {
 // GetSubscriptionChange Fetch a subscription's pending change
 // Returns: A subscription's pending change.
 func (c *Client) GetSubscriptionChange(subscriptionId string) (*SubscriptionChange, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/change", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/change", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &SubscriptionChange{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3164,9 +3440,12 @@ func (c *Client) GetSubscriptionChange(subscriptionId string) (*SubscriptionChan
 // CreateSubscriptionChange Create a new subscription change
 // Returns: A subscription change.
 func (c *Client) CreateSubscriptionChange(subscriptionId string, body *SubscriptionChangeCreate) (*SubscriptionChange, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/change", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/change", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &SubscriptionChange{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3176,9 +3455,12 @@ func (c *Client) CreateSubscriptionChange(subscriptionId string, body *Subscript
 // RemoveSubscriptionChange Delete the pending subscription change
 // Returns: Subscription change was deleted.
 func (c *Client) RemoveSubscriptionChange(subscriptionId string) (*Empty, error) {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/change", subscriptionId)
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/change", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Empty{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3271,14 +3553,17 @@ func (list *ListSubscriptionInvoicesParams) URLParams() []KeyValue {
 
 // ListSubscriptionInvoices List a subscription's invoices
 // Returns: A list of the subscription's invoices.
-func (c *Client) ListSubscriptionInvoices(subscriptionId string, params *ListSubscriptionInvoicesParams) *InvoiceList {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/invoices", subscriptionId)
+func (c *Client) ListSubscriptionInvoices(subscriptionId string, params *ListSubscriptionInvoicesParams) (*InvoiceList, error) {
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/invoices", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &InvoiceList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListSubscriptionLineItemsParams struct {
@@ -3377,14 +3662,17 @@ func (list *ListSubscriptionLineItemsParams) URLParams() []KeyValue {
 
 // ListSubscriptionLineItems List a subscription's line items
 // Returns: A list of the subscription's line items.
-func (c *Client) ListSubscriptionLineItems(subscriptionId string, params *ListSubscriptionLineItemsParams) *LineItemList {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/line_items", subscriptionId)
+func (c *Client) ListSubscriptionLineItems(subscriptionId string, params *ListSubscriptionLineItemsParams) (*LineItemList, error) {
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/line_items", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &LineItemList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListSubscriptionCouponRedemptionsParams struct {
@@ -3448,14 +3736,17 @@ func (list *ListSubscriptionCouponRedemptionsParams) URLParams() []KeyValue {
 
 // ListSubscriptionCouponRedemptions Show the coupon redemptions for a subscription
 // Returns: A list of the the coupon redemptions on a subscription.
-func (c *Client) ListSubscriptionCouponRedemptions(subscriptionId string, params *ListSubscriptionCouponRedemptionsParams) *CouponRedemptionList {
-	path := c.InterpolatePath("/subscriptions/{subscription_id}/coupon_redemptions", subscriptionId)
+func (c *Client) ListSubscriptionCouponRedemptions(subscriptionId string, params *ListSubscriptionCouponRedemptionsParams) (*CouponRedemptionList, error) {
+	path, err := c.InterpolatePath("/subscriptions/{subscription_id}/coupon_redemptions", subscriptionId)
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &CouponRedemptionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 type ListTransactionsParams struct {
@@ -3547,22 +3838,28 @@ func (list *ListTransactionsParams) URLParams() []KeyValue {
 
 // ListTransactions List a site's transactions
 // Returns: A list of the site's transactions.
-func (c *Client) ListTransactions(params *ListTransactionsParams) *TransactionList {
-	path := "/transactions"
+func (c *Client) ListTransactions(params *ListTransactionsParams) (*TransactionList, error) {
+	path, err := c.InterpolatePath("/transactions")
+	if err != nil {
+		return nil, err
+	}
 	path = BuildUrl(path, params)
 	return &TransactionList{
 		client:       c,
 		nextPagePath: path,
 		HasMore:      true,
-	}
+	}, nil
 }
 
 // GetTransaction Fetch a transaction
 // Returns: A transaction.
 func (c *Client) GetTransaction(transactionId string) (*Transaction, error) {
-	path := c.InterpolatePath("/transactions/{transaction_id}", transactionId)
+	path, err := c.InterpolatePath("/transactions/{transaction_id}", transactionId)
+	if err != nil {
+		return nil, err
+	}
 	result := &Transaction{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3572,9 +3869,12 @@ func (c *Client) GetTransaction(transactionId string) (*Transaction, error) {
 // GetUniqueCouponCode Fetch a unique coupon code
 // Returns: A unique coupon code.
 func (c *Client) GetUniqueCouponCode(uniqueCouponCodeId string) (*UniqueCouponCode, error) {
-	path := c.InterpolatePath("/unique_coupon_codes/{unique_coupon_code_id}", uniqueCouponCodeId)
+	path, err := c.InterpolatePath("/unique_coupon_codes/{unique_coupon_code_id}", uniqueCouponCodeId)
+	if err != nil {
+		return nil, err
+	}
 	result := &UniqueCouponCode{}
-	err := c.Call(http.MethodGet, path, nil, result)
+	err = c.Call(http.MethodGet, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3584,9 +3884,12 @@ func (c *Client) GetUniqueCouponCode(uniqueCouponCodeId string) (*UniqueCouponCo
 // DeactivateUniqueCouponCode Deactivate a unique coupon code
 // Returns: A unique coupon code.
 func (c *Client) DeactivateUniqueCouponCode(uniqueCouponCodeId string) (*UniqueCouponCode, error) {
-	path := c.InterpolatePath("/unique_coupon_codes/{unique_coupon_code_id}", uniqueCouponCodeId)
+	path, err := c.InterpolatePath("/unique_coupon_codes/{unique_coupon_code_id}", uniqueCouponCodeId)
+	if err != nil {
+		return nil, err
+	}
 	result := &UniqueCouponCode{}
-	err := c.Call(http.MethodDelete, path, nil, result)
+	err = c.Call(http.MethodDelete, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3596,9 +3899,12 @@ func (c *Client) DeactivateUniqueCouponCode(uniqueCouponCodeId string) (*UniqueC
 // ReactivateUniqueCouponCode Restore a unique coupon code
 // Returns: A unique coupon code.
 func (c *Client) ReactivateUniqueCouponCode(uniqueCouponCodeId string) (*UniqueCouponCode, error) {
-	path := c.InterpolatePath("/unique_coupon_codes/{unique_coupon_code_id}/restore", uniqueCouponCodeId)
+	path, err := c.InterpolatePath("/unique_coupon_codes/{unique_coupon_code_id}/restore", uniqueCouponCodeId)
+	if err != nil {
+		return nil, err
+	}
 	result := &UniqueCouponCode{}
-	err := c.Call(http.MethodPut, path, nil, result)
+	err = c.Call(http.MethodPut, path, nil, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3608,9 +3914,12 @@ func (c *Client) ReactivateUniqueCouponCode(uniqueCouponCodeId string) (*UniqueC
 // CreatePurchase Create a new purchase
 // Returns: Returns the new invoices
 func (c *Client) CreatePurchase(body *PurchaseCreate) (*InvoiceCollection, error) {
-	path := c.InterpolatePath("/purchases")
+	path, err := c.InterpolatePath("/purchases")
+	if err != nil {
+		return nil, err
+	}
 	result := &InvoiceCollection{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
@@ -3620,9 +3929,12 @@ func (c *Client) CreatePurchase(body *PurchaseCreate) (*InvoiceCollection, error
 // PreviewPurchase Preview a new purchase
 // Returns: Returns preview of the new invoices
 func (c *Client) PreviewPurchase(body *PurchaseCreate) (*InvoiceCollection, error) {
-	path := c.InterpolatePath("/purchases/preview")
+	path, err := c.InterpolatePath("/purchases/preview")
+	if err != nil {
+		return nil, err
+	}
 	result := &InvoiceCollection{}
-	err := c.Call(http.MethodPost, path, body, result)
+	err = c.Call(http.MethodPost, path, body, result)
 	if err != nil {
 		return nil, err
 	}
