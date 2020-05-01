@@ -6,6 +6,7 @@ import (
 )
 
 type Site struct {
+	recurlyResponse *ResponseMetadata
 
 	// Site ID
 	Id string `json:"id,omitempty"`
@@ -38,12 +39,34 @@ type Site struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Site) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Site) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type siteList struct {
 	ListMetadata
-	Data []Site `json:"data"`
+	Data            []Site `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *siteList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *siteList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// SiteList allows you to paginate Site objects
 type SiteList struct {
 	client       *Client
 	nextPagePath string
@@ -52,30 +75,22 @@ type SiteList struct {
 	Data    []Site
 }
 
-func newSiteList(client *Client, list *siteList) *SiteList {
-	return &SiteList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list SiteList) NextPage() (*SiteList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *SiteList) Fetch() error {
 	resources := &siteList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newSiteList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Address struct {
+	recurlyResponse *ResponseMetadata
 
 	// First name
 	FirstName string `json:"first_name,omitempty"`
@@ -105,12 +120,34 @@ type Address struct {
 	Country string `json:"country,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Address) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Address) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type addressList struct {
 	ListMetadata
-	Data []Address `json:"data"`
+	Data            []Address `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *addressList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *addressList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AddressList allows you to paginate Address objects
 type AddressList struct {
 	client       *Client
 	nextPagePath string
@@ -119,32 +156,27 @@ type AddressList struct {
 	Data    []Address
 }
 
-func newAddressList(client *Client, list *addressList) *AddressList {
-	return &AddressList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AddressList) NextPage() (*AddressList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AddressList) Fetch() error {
 	resources := &addressList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAddressList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Settings struct {
+	recurlyResponse *ResponseMetadata
 
-	// - full:      Full Address (Street, City, State, Postal Code and Country) - streetzip: Street and Postal Code only - zip:       Postal Code only - none:      No Address
+	// - full:      Full Address (Street, City, State, Postal Code and Country)
+	// - streetzip: Street and Postal Code only
+	// - zip:       Postal Code only
+	// - none:      No Address
 	BillingAddressRequirement string `json:"billing_address_requirement,omitempty"`
 
 	AcceptedCurrencies []string `json:"accepted_currencies,omitempty"`
@@ -153,12 +185,34 @@ type Settings struct {
 	DefaultCurrency string `json:"default_currency,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Settings) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Settings) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type settingsList struct {
 	ListMetadata
-	Data []Settings `json:"data"`
+	Data            []Settings `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *settingsList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *settingsList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// SettingsList allows you to paginate Settings objects
 type SettingsList struct {
 	client       *Client
 	nextPagePath string
@@ -167,30 +221,23 @@ type SettingsList struct {
 	Data    []Settings
 }
 
-func newSettingsList(client *Client, list *settingsList) *SettingsList {
-	return &SettingsList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list SettingsList) NextPage() (*SettingsList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *SettingsList) Fetch() error {
 	resources := &settingsList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newSettingsList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Account struct {
+	recurlyResponse *ResponseMetadata
+
 	Id string `json:"id,omitempty"`
 
 	// Object type
@@ -276,12 +323,34 @@ type Account struct {
 	CustomFields []CustomField `json:"custom_fields,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Account) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Account) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type accountList struct {
 	ListMetadata
-	Data []Account `json:"data"`
+	Data            []Account `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *accountList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *accountList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AccountList allows you to paginate Account objects
 type AccountList struct {
 	client       *Client
 	nextPagePath string
@@ -290,30 +359,22 @@ type AccountList struct {
 	Data    []Account
 }
 
-func newAccountList(client *Client, list *accountList) *AccountList {
-	return &AccountList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AccountList) NextPage() (*AccountList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AccountList) Fetch() error {
 	resources := &accountList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAccountList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type ShippingAddress struct {
+	recurlyResponse *ResponseMetadata
 
 	// Shipping Address ID
 	Id string `json:"id,omitempty"`
@@ -360,12 +421,34 @@ type ShippingAddress struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *ShippingAddress) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *ShippingAddress) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type shippingAddressList struct {
 	ListMetadata
-	Data []ShippingAddress `json:"data"`
+	Data            []ShippingAddress `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *shippingAddressList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *shippingAddressList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// ShippingAddressList allows you to paginate ShippingAddress objects
 type ShippingAddressList struct {
 	client       *Client
 	nextPagePath string
@@ -374,30 +457,23 @@ type ShippingAddressList struct {
 	Data    []ShippingAddress
 }
 
-func newShippingAddressList(client *Client, list *shippingAddressList) *ShippingAddressList {
-	return &ShippingAddressList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list ShippingAddressList) NextPage() (*ShippingAddressList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *ShippingAddressList) Fetch() error {
 	resources := &shippingAddressList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newShippingAddressList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type BillingInfo struct {
+	recurlyResponse *ResponseMetadata
+
 	Id string `json:"id,omitempty"`
 
 	// Object type
@@ -432,12 +508,34 @@ type BillingInfo struct {
 	UpdatedBy BillingInfoUpdatedBy `json:"updated_by,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *BillingInfo) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *BillingInfo) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type billingInfoList struct {
 	ListMetadata
-	Data []BillingInfo `json:"data"`
+	Data            []BillingInfo `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *billingInfoList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *billingInfoList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// BillingInfoList allows you to paginate BillingInfo objects
 type BillingInfoList struct {
 	client       *Client
 	nextPagePath string
@@ -446,30 +544,23 @@ type BillingInfoList struct {
 	Data    []BillingInfo
 }
 
-func newBillingInfoList(client *Client, list *billingInfoList) *BillingInfoList {
-	return &BillingInfoList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list BillingInfoList) NextPage() (*BillingInfoList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *BillingInfoList) Fetch() error {
 	resources := &billingInfoList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newBillingInfoList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type PaymentMethod struct {
+	recurlyResponse *ResponseMetadata
+
 	Object string `json:"object,omitempty"`
 
 	// Visa, MasterCard, American Express, Discover, JCB, etc.
@@ -509,12 +600,34 @@ type PaymentMethod struct {
 	RoutingNumberBank string `json:"routing_number_bank,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *PaymentMethod) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *PaymentMethod) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type paymentMethodList struct {
 	ListMetadata
-	Data []PaymentMethod `json:"data"`
+	Data            []PaymentMethod `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *paymentMethodList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *paymentMethodList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// PaymentMethodList allows you to paginate PaymentMethod objects
 type PaymentMethodList struct {
 	client       *Client
 	nextPagePath string
@@ -523,30 +636,22 @@ type PaymentMethodList struct {
 	Data    []PaymentMethod
 }
 
-func newPaymentMethodList(client *Client, list *paymentMethodList) *PaymentMethodList {
-	return &PaymentMethodList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list PaymentMethodList) NextPage() (*PaymentMethodList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *PaymentMethodList) Fetch() error {
 	resources := &paymentMethodList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newPaymentMethodList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type FraudInfo struct {
+	recurlyResponse *ResponseMetadata
 
 	// Kount score
 	Score int `json:"score,omitempty"`
@@ -558,12 +663,34 @@ type FraudInfo struct {
 	RiskRulesTriggered map[string]interface{} `json:"risk_rules_triggered,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *FraudInfo) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *FraudInfo) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type fraudInfoList struct {
 	ListMetadata
-	Data []FraudInfo `json:"data"`
+	Data            []FraudInfo `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *fraudInfoList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *fraudInfoList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// FraudInfoList allows you to paginate FraudInfo objects
 type FraudInfoList struct {
 	client       *Client
 	nextPagePath string
@@ -572,30 +699,22 @@ type FraudInfoList struct {
 	Data    []FraudInfo
 }
 
-func newFraudInfoList(client *Client, list *fraudInfoList) *FraudInfoList {
-	return &FraudInfoList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list FraudInfoList) NextPage() (*FraudInfoList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *FraudInfoList) Fetch() error {
 	resources := &fraudInfoList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newFraudInfoList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type BillingInfoUpdatedBy struct {
+	recurlyResponse *ResponseMetadata
 
 	// Customer's IP address when updating their billing information.
 	Ip string `json:"ip,omitempty"`
@@ -604,12 +723,34 @@ type BillingInfoUpdatedBy struct {
 	Country string `json:"country,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *BillingInfoUpdatedBy) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *BillingInfoUpdatedBy) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type billingInfoUpdatedByList struct {
 	ListMetadata
-	Data []BillingInfoUpdatedBy `json:"data"`
+	Data            []BillingInfoUpdatedBy `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *billingInfoUpdatedByList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *billingInfoUpdatedByList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// BillingInfoUpdatedByList allows you to paginate BillingInfoUpdatedBy objects
 type BillingInfoUpdatedByList struct {
 	client       *Client
 	nextPagePath string
@@ -618,30 +759,22 @@ type BillingInfoUpdatedByList struct {
 	Data    []BillingInfoUpdatedBy
 }
 
-func newBillingInfoUpdatedByList(client *Client, list *billingInfoUpdatedByList) *BillingInfoUpdatedByList {
-	return &BillingInfoUpdatedByList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list BillingInfoUpdatedByList) NextPage() (*BillingInfoUpdatedByList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *BillingInfoUpdatedByList) Fetch() error {
 	resources := &billingInfoUpdatedByList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newBillingInfoUpdatedByList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CustomField struct {
+	recurlyResponse *ResponseMetadata
 
 	// Fields must be created in the UI before values can be assigned to them.
 	Name string `json:"name,omitempty"`
@@ -650,12 +783,34 @@ type CustomField struct {
 	Value string `json:"value,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CustomField) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CustomField) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type customFieldList struct {
 	ListMetadata
-	Data []CustomField `json:"data"`
+	Data            []CustomField `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *customFieldList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *customFieldList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CustomFieldList allows you to paginate CustomField objects
 type CustomFieldList struct {
 	client       *Client
 	nextPagePath string
@@ -664,30 +819,22 @@ type CustomFieldList struct {
 	Data    []CustomField
 }
 
-func newCustomFieldList(client *Client, list *customFieldList) *CustomFieldList {
-	return &CustomFieldList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CustomFieldList) NextPage() (*CustomFieldList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CustomFieldList) Fetch() error {
 	resources := &customFieldList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCustomFieldList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type ErrorMayHaveTransaction struct {
+	recurlyResponse *ResponseMetadata
 
 	// Type
 	Type string `json:"type,omitempty"`
@@ -702,12 +849,34 @@ type ErrorMayHaveTransaction struct {
 	TransactionError TransactionError `json:"transaction_error,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *ErrorMayHaveTransaction) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *ErrorMayHaveTransaction) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type errorMayHaveTransactionList struct {
 	ListMetadata
-	Data []ErrorMayHaveTransaction `json:"data"`
+	Data            []ErrorMayHaveTransaction `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *errorMayHaveTransactionList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *errorMayHaveTransactionList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// ErrorMayHaveTransactionList allows you to paginate ErrorMayHaveTransaction objects
 type ErrorMayHaveTransactionList struct {
 	client       *Client
 	nextPagePath string
@@ -716,30 +885,22 @@ type ErrorMayHaveTransactionList struct {
 	Data    []ErrorMayHaveTransaction
 }
 
-func newErrorMayHaveTransactionList(client *Client, list *errorMayHaveTransactionList) *ErrorMayHaveTransactionList {
-	return &ErrorMayHaveTransactionList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list ErrorMayHaveTransactionList) NextPage() (*ErrorMayHaveTransactionList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *ErrorMayHaveTransactionList) Fetch() error {
 	resources := &errorMayHaveTransactionList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newErrorMayHaveTransactionList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AccountAcquisition struct {
+	recurlyResponse *ResponseMetadata
 
 	// Account balance
 	Cost AccountAcquisitionCost `json:"cost,omitempty"`
@@ -768,12 +929,34 @@ type AccountAcquisition struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AccountAcquisition) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AccountAcquisition) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type accountAcquisitionList struct {
 	ListMetadata
-	Data []AccountAcquisition `json:"data"`
+	Data            []AccountAcquisition `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *accountAcquisitionList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *accountAcquisitionList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AccountAcquisitionList allows you to paginate AccountAcquisition objects
 type AccountAcquisitionList struct {
 	client       *Client
 	nextPagePath string
@@ -782,30 +965,22 @@ type AccountAcquisitionList struct {
 	Data    []AccountAcquisition
 }
 
-func newAccountAcquisitionList(client *Client, list *accountAcquisitionList) *AccountAcquisitionList {
-	return &AccountAcquisitionList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AccountAcquisitionList) NextPage() (*AccountAcquisitionList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AccountAcquisitionList) Fetch() error {
 	resources := &accountAcquisitionList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAccountAcquisitionList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AccountAcquisitionCost struct {
+	recurlyResponse *ResponseMetadata
 
 	// 3-letter ISO 4217 currency code.
 	Currency string `json:"currency,omitempty"`
@@ -814,12 +989,34 @@ type AccountAcquisitionCost struct {
 	Amount float64 `json:"amount,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AccountAcquisitionCost) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AccountAcquisitionCost) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type accountAcquisitionCostList struct {
 	ListMetadata
-	Data []AccountAcquisitionCost `json:"data"`
+	Data            []AccountAcquisitionCost `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *accountAcquisitionCostList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *accountAcquisitionCostList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AccountAcquisitionCostList allows you to paginate AccountAcquisitionCost objects
 type AccountAcquisitionCostList struct {
 	client       *Client
 	nextPagePath string
@@ -828,30 +1025,23 @@ type AccountAcquisitionCostList struct {
 	Data    []AccountAcquisitionCost
 }
 
-func newAccountAcquisitionCostList(client *Client, list *accountAcquisitionCostList) *AccountAcquisitionCostList {
-	return &AccountAcquisitionCostList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AccountAcquisitionCostList) NextPage() (*AccountAcquisitionCostList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AccountAcquisitionCostList) Fetch() error {
 	resources := &accountAcquisitionCostList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAccountAcquisitionCostList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AccountMini struct {
+	recurlyResponse *ResponseMetadata
+
 	Id string `json:"id,omitempty"`
 
 	// Object type
@@ -874,12 +1064,34 @@ type AccountMini struct {
 	BillTo string `json:"bill_to,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AccountMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AccountMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type accountMiniList struct {
 	ListMetadata
-	Data []AccountMini `json:"data"`
+	Data            []AccountMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *accountMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *accountMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AccountMiniList allows you to paginate AccountMini objects
 type AccountMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -888,30 +1100,22 @@ type AccountMiniList struct {
 	Data    []AccountMini
 }
 
-func newAccountMiniList(client *Client, list *accountMiniList) *AccountMiniList {
-	return &AccountMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AccountMiniList) NextPage() (*AccountMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AccountMiniList) Fetch() error {
 	resources := &accountMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAccountMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AccountBalance struct {
+	recurlyResponse *ResponseMetadata
 
 	// Object type
 	Object string `json:"object,omitempty"`
@@ -924,12 +1128,34 @@ type AccountBalance struct {
 	Balances []AccountBalanceAmount `json:"balances,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AccountBalance) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AccountBalance) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type accountBalanceList struct {
 	ListMetadata
-	Data []AccountBalance `json:"data"`
+	Data            []AccountBalance `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *accountBalanceList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *accountBalanceList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AccountBalanceList allows you to paginate AccountBalance objects
 type AccountBalanceList struct {
 	client       *Client
 	nextPagePath string
@@ -938,30 +1164,22 @@ type AccountBalanceList struct {
 	Data    []AccountBalance
 }
 
-func newAccountBalanceList(client *Client, list *accountBalanceList) *AccountBalanceList {
-	return &AccountBalanceList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AccountBalanceList) NextPage() (*AccountBalanceList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AccountBalanceList) Fetch() error {
 	resources := &accountBalanceList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAccountBalanceList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AccountBalanceAmount struct {
+	recurlyResponse *ResponseMetadata
 
 	// 3-letter ISO 4217 currency code.
 	Currency string `json:"currency,omitempty"`
@@ -970,12 +1188,34 @@ type AccountBalanceAmount struct {
 	Amount float64 `json:"amount,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AccountBalanceAmount) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AccountBalanceAmount) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type accountBalanceAmountList struct {
 	ListMetadata
-	Data []AccountBalanceAmount `json:"data"`
+	Data            []AccountBalanceAmount `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *accountBalanceAmountList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *accountBalanceAmountList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AccountBalanceAmountList allows you to paginate AccountBalanceAmount objects
 type AccountBalanceAmountList struct {
 	client       *Client
 	nextPagePath string
@@ -984,30 +1224,22 @@ type AccountBalanceAmountList struct {
 	Data    []AccountBalanceAmount
 }
 
-func newAccountBalanceAmountList(client *Client, list *accountBalanceAmountList) *AccountBalanceAmountList {
-	return &AccountBalanceAmountList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AccountBalanceAmountList) NextPage() (*AccountBalanceAmountList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AccountBalanceAmountList) Fetch() error {
 	resources := &accountBalanceAmountList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAccountBalanceAmountList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CouponRedemption struct {
+	recurlyResponse *ResponseMetadata
 
 	// Coupon Redemption ID
 	Id string `json:"id,omitempty"`
@@ -1039,12 +1271,34 @@ type CouponRedemption struct {
 	RemovedAt time.Time `json:"removed_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CouponRedemption) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CouponRedemption) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type couponRedemptionList struct {
 	ListMetadata
-	Data []CouponRedemption `json:"data"`
+	Data            []CouponRedemption `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *couponRedemptionList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *couponRedemptionList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CouponRedemptionList allows you to paginate CouponRedemption objects
 type CouponRedemptionList struct {
 	client       *Client
 	nextPagePath string
@@ -1053,30 +1307,22 @@ type CouponRedemptionList struct {
 	Data    []CouponRedemption
 }
 
-func newCouponRedemptionList(client *Client, list *couponRedemptionList) *CouponRedemptionList {
-	return &CouponRedemptionList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CouponRedemptionList) NextPage() (*CouponRedemptionList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CouponRedemptionList) Fetch() error {
 	resources := &couponRedemptionList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCouponRedemptionList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Coupon struct {
+	recurlyResponse *ResponseMetadata
 
 	// Coupon ID
 	Id string `json:"id,omitempty"`
@@ -1105,7 +1351,8 @@ type Coupon struct {
 	// On a bulk coupon, the template from which unique coupon codes are generated.
 	UniqueCodeTemplate string `json:"unique_code_template,omitempty"`
 
-	// - "single_use" coupons applies to the first invoice only. - "temporal" coupons will apply to invoices for the duration determined by the `temporal_unit` and `temporal_amount` attributes.
+	// - "single_use" coupons applies to the first invoice only.
+	// - "temporal" coupons will apply to invoices for the duration determined by the `temporal_unit` and `temporal_amount` attributes.
 	Duration string `json:"duration,omitempty"`
 
 	// If `duration` is "temporal" than `temporal_amount` is an integer which is multiplied by `temporal_unit` to define the duration that the coupon will be applied to invoices for.
@@ -1135,7 +1382,8 @@ type Coupon struct {
 	// Whether the discount is for all eligible charges on the account, or only a specific subscription.
 	RedemptionResource string `json:"redemption_resource,omitempty"`
 
-	// Details of the discount a coupon applies. Will contain a `type` property and one of the following properties: `percent`, `fixed`, `trial`.
+	// Details of the discount a coupon applies. Will contain a `type`
+	// property and one of the following properties: `percent`, `fixed`, `trial`.
 	Discount CouponDiscount `json:"discount,omitempty"`
 
 	// Whether the coupon is "single_code" or "bulk". Bulk coupons will require a `unique_code_template` and will generate unique codes through the `/generate` endpoint.
@@ -1163,12 +1411,34 @@ type Coupon struct {
 	ExpiredAt time.Time `json:"expired_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Coupon) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Coupon) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type couponList struct {
 	ListMetadata
-	Data []Coupon `json:"data"`
+	Data            []Coupon `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *couponList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *couponList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CouponList allows you to paginate Coupon objects
 type CouponList struct {
 	client       *Client
 	nextPagePath string
@@ -1177,30 +1447,22 @@ type CouponList struct {
 	Data    []Coupon
 }
 
-func newCouponList(client *Client, list *couponList) *CouponList {
-	return &CouponList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CouponList) NextPage() (*CouponList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CouponList) Fetch() error {
 	resources := &couponList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCouponList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type PlanMini struct {
+	recurlyResponse *ResponseMetadata
 
 	// Plan ID
 	Id string `json:"id,omitempty"`
@@ -1215,12 +1477,34 @@ type PlanMini struct {
 	Name string `json:"name,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *PlanMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *PlanMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type planMiniList struct {
 	ListMetadata
-	Data []PlanMini `json:"data"`
+	Data            []PlanMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *planMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *planMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// PlanMiniList allows you to paginate PlanMini objects
 type PlanMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -1229,30 +1513,23 @@ type PlanMiniList struct {
 	Data    []PlanMini
 }
 
-func newPlanMiniList(client *Client, list *planMiniList) *PlanMiniList {
-	return &PlanMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list PlanMiniList) NextPage() (*PlanMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *PlanMiniList) Fetch() error {
 	resources := &planMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newPlanMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CouponDiscount struct {
+	recurlyResponse *ResponseMetadata
+
 	Type string `json:"type,omitempty"`
 
 	// This is only present when `type=percent`.
@@ -1265,12 +1542,34 @@ type CouponDiscount struct {
 	Trial CouponDiscountTrial `json:"trial,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CouponDiscount) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CouponDiscount) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type couponDiscountList struct {
 	ListMetadata
-	Data []CouponDiscount `json:"data"`
+	Data            []CouponDiscount `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *couponDiscountList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *couponDiscountList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CouponDiscountList allows you to paginate CouponDiscount objects
 type CouponDiscountList struct {
 	client       *Client
 	nextPagePath string
@@ -1279,30 +1578,22 @@ type CouponDiscountList struct {
 	Data    []CouponDiscount
 }
 
-func newCouponDiscountList(client *Client, list *couponDiscountList) *CouponDiscountList {
-	return &CouponDiscountList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CouponDiscountList) NextPage() (*CouponDiscountList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CouponDiscountList) Fetch() error {
 	resources := &couponDiscountList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCouponDiscountList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CouponDiscountPricing struct {
+	recurlyResponse *ResponseMetadata
 
 	// 3-letter ISO 4217 currency code.
 	Currency string `json:"currency,omitempty"`
@@ -1311,12 +1602,34 @@ type CouponDiscountPricing struct {
 	Amount float64 `json:"amount,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CouponDiscountPricing) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CouponDiscountPricing) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type couponDiscountPricingList struct {
 	ListMetadata
-	Data []CouponDiscountPricing `json:"data"`
+	Data            []CouponDiscountPricing `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *couponDiscountPricingList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *couponDiscountPricingList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CouponDiscountPricingList allows you to paginate CouponDiscountPricing objects
 type CouponDiscountPricingList struct {
 	client       *Client
 	nextPagePath string
@@ -1325,30 +1638,22 @@ type CouponDiscountPricingList struct {
 	Data    []CouponDiscountPricing
 }
 
-func newCouponDiscountPricingList(client *Client, list *couponDiscountPricingList) *CouponDiscountPricingList {
-	return &CouponDiscountPricingList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CouponDiscountPricingList) NextPage() (*CouponDiscountPricingList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CouponDiscountPricingList) Fetch() error {
 	resources := &couponDiscountPricingList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCouponDiscountPricingList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CouponDiscountTrial struct {
+	recurlyResponse *ResponseMetadata
 
 	// Temporal unit of the free trial
 	Unit string `json:"unit,omitempty"`
@@ -1357,12 +1662,34 @@ type CouponDiscountTrial struct {
 	Length int `json:"length,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CouponDiscountTrial) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CouponDiscountTrial) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type couponDiscountTrialList struct {
 	ListMetadata
-	Data []CouponDiscountTrial `json:"data"`
+	Data            []CouponDiscountTrial `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *couponDiscountTrialList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *couponDiscountTrialList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CouponDiscountTrialList allows you to paginate CouponDiscountTrial objects
 type CouponDiscountTrialList struct {
 	client       *Client
 	nextPagePath string
@@ -1371,30 +1698,22 @@ type CouponDiscountTrialList struct {
 	Data    []CouponDiscountTrial
 }
 
-func newCouponDiscountTrialList(client *Client, list *couponDiscountTrialList) *CouponDiscountTrialList {
-	return &CouponDiscountTrialList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CouponDiscountTrialList) NextPage() (*CouponDiscountTrialList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CouponDiscountTrialList) Fetch() error {
 	resources := &couponDiscountTrialList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCouponDiscountTrialList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CreditPayment struct {
+	recurlyResponse *ResponseMetadata
 
 	// Credit Payment ID
 	Id string `json:"id,omitempty"`
@@ -1438,12 +1757,34 @@ type CreditPayment struct {
 	VoidedAt time.Time `json:"voided_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CreditPayment) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CreditPayment) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type creditPaymentList struct {
 	ListMetadata
-	Data []CreditPayment `json:"data"`
+	Data            []CreditPayment `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *creditPaymentList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *creditPaymentList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CreditPaymentList allows you to paginate CreditPayment objects
 type CreditPaymentList struct {
 	client       *Client
 	nextPagePath string
@@ -1452,30 +1793,22 @@ type CreditPaymentList struct {
 	Data    []CreditPayment
 }
 
-func newCreditPaymentList(client *Client, list *creditPaymentList) *CreditPaymentList {
-	return &CreditPaymentList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CreditPaymentList) NextPage() (*CreditPaymentList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CreditPaymentList) Fetch() error {
 	resources := &creditPaymentList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCreditPaymentList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type InvoiceMini struct {
+	recurlyResponse *ResponseMetadata
 
 	// Invoice ID
 	Id string `json:"id,omitempty"`
@@ -1493,12 +1826,34 @@ type InvoiceMini struct {
 	State string `json:"state,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *InvoiceMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *InvoiceMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type invoiceMiniList struct {
 	ListMetadata
-	Data []InvoiceMini `json:"data"`
+	Data            []InvoiceMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *invoiceMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *invoiceMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// InvoiceMiniList allows you to paginate InvoiceMini objects
 type InvoiceMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -1507,30 +1862,22 @@ type InvoiceMiniList struct {
 	Data    []InvoiceMini
 }
 
-func newInvoiceMiniList(client *Client, list *invoiceMiniList) *InvoiceMiniList {
-	return &InvoiceMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list InvoiceMiniList) NextPage() (*InvoiceMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *InvoiceMiniList) Fetch() error {
 	resources := &invoiceMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newInvoiceMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Transaction struct {
+	recurlyResponse *ResponseMetadata
 
 	// Transaction ID
 	Id string `json:"id,omitempty"`
@@ -1556,7 +1903,11 @@ type Transaction struct {
 	// If the transaction is charging or refunding for one or more subscriptions, these are their IDs.
 	SubscriptionIds []string `json:"subscription_ids,omitempty"`
 
-	// - `authorization` – verifies billing information and places a hold on money in the customer's account. - `capture` – captures funds held by an authorization and completes a purchase. - `purchase` – combines the authorization and capture in one transaction. - `refund` – returns all or a portion of the money collected in a previous transaction to the customer. - `verify` – a $0 or $1 transaction used to verify billing information which is immediately voided.
+	// - `authorization` – verifies billing information and places a hold on money in the customer's account.
+	// - `capture` – captures funds held by an authorization and completes a purchase.
+	// - `purchase` – combines the authorization and capture in one transaction.
+	// - `refund` – returns all or a portion of the money collected in a previous transaction to the customer.
+	// - `verify` – a $0 or $1 transaction used to verify billing information which is immediately voided.
 	Type string `json:"type,omitempty"`
 
 	// Describes how the transaction was triggered.
@@ -1584,7 +1935,10 @@ type Transaction struct {
 
 	PaymentMethod PaymentMethod `json:"payment_method,omitempty"`
 
-	// IP address provided when the billing information was collected:  - When the customer enters billing information into the Recurly.js or Hosted Payment Pages, Recurly records the IP address. - When the merchant enters billing information using the API, the merchant may provide an IP address. - When the merchant enters billing information using the UI, no IP address is recorded.
+	// IP address provided when the billing information was collected:
+	// - When the customer enters billing information into the Recurly.js or Hosted Payment Pages, Recurly records the IP address.
+	// - When the merchant enters billing information using the API, the merchant may provide an IP address.
+	// - When the merchant enters billing information using the UI, no IP address is recorded.
 	IpAddressV4 string `json:"ip_address_v4,omitempty"`
 
 	// IP address's country
@@ -1638,12 +1992,34 @@ type Transaction struct {
 	CollectedAt time.Time `json:"collected_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Transaction) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Transaction) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type transactionList struct {
 	ListMetadata
-	Data []Transaction `json:"data"`
+	Data            []Transaction `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *transactionList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *transactionList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// TransactionList allows you to paginate Transaction objects
 type TransactionList struct {
 	client       *Client
 	nextPagePath string
@@ -1652,30 +2028,23 @@ type TransactionList struct {
 	Data    []Transaction
 }
 
-func newTransactionList(client *Client, list *transactionList) *TransactionList {
-	return &TransactionList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list TransactionList) NextPage() (*TransactionList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *TransactionList) Fetch() error {
 	resources := &transactionList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newTransactionList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type TransactionPaymentGateway struct {
+	recurlyResponse *ResponseMetadata
+
 	Id string `json:"id,omitempty"`
 
 	// Object type
@@ -1686,12 +2055,34 @@ type TransactionPaymentGateway struct {
 	Name string `json:"name,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *TransactionPaymentGateway) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *TransactionPaymentGateway) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type transactionPaymentGatewayList struct {
 	ListMetadata
-	Data []TransactionPaymentGateway `json:"data"`
+	Data            []TransactionPaymentGateway `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *transactionPaymentGatewayList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *transactionPaymentGatewayList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// TransactionPaymentGatewayList allows you to paginate TransactionPaymentGateway objects
 type TransactionPaymentGatewayList struct {
 	client       *Client
 	nextPagePath string
@@ -1700,30 +2091,22 @@ type TransactionPaymentGatewayList struct {
 	Data    []TransactionPaymentGateway
 }
 
-func newTransactionPaymentGatewayList(client *Client, list *transactionPaymentGatewayList) *TransactionPaymentGatewayList {
-	return &TransactionPaymentGatewayList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list TransactionPaymentGatewayList) NextPage() (*TransactionPaymentGatewayList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *TransactionPaymentGatewayList) Fetch() error {
 	resources := &transactionPaymentGatewayList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newTransactionPaymentGatewayList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Invoice struct {
+	recurlyResponse *ResponseMetadata
 
 	// Invoice ID
 	Id string `json:"id,omitempty"`
@@ -1825,12 +2208,34 @@ type Invoice struct {
 	ClosedAt time.Time `json:"closed_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Invoice) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Invoice) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type invoiceList struct {
 	ListMetadata
-	Data []Invoice `json:"data"`
+	Data            []Invoice `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *invoiceList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *invoiceList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// InvoiceList allows you to paginate Invoice objects
 type InvoiceList struct {
 	client       *Client
 	nextPagePath string
@@ -1839,30 +2244,22 @@ type InvoiceList struct {
 	Data    []Invoice
 }
 
-func newInvoiceList(client *Client, list *invoiceList) *InvoiceList {
-	return &InvoiceList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list InvoiceList) NextPage() (*InvoiceList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *InvoiceList) Fetch() error {
 	resources := &invoiceList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newInvoiceList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type InvoiceAddress struct {
+	recurlyResponse *ResponseMetadata
 
 	// Name on account
 	NameOnAccount string `json:"name_on_account,omitempty"`
@@ -1898,12 +2295,34 @@ type InvoiceAddress struct {
 	Country string `json:"country,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *InvoiceAddress) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *InvoiceAddress) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type invoiceAddressList struct {
 	ListMetadata
-	Data []InvoiceAddress `json:"data"`
+	Data            []InvoiceAddress `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *invoiceAddressList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *invoiceAddressList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// InvoiceAddressList allows you to paginate InvoiceAddress objects
 type InvoiceAddressList struct {
 	client       *Client
 	nextPagePath string
@@ -1912,30 +2331,22 @@ type InvoiceAddressList struct {
 	Data    []InvoiceAddress
 }
 
-func newInvoiceAddressList(client *Client, list *invoiceAddressList) *InvoiceAddressList {
-	return &InvoiceAddressList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list InvoiceAddressList) NextPage() (*InvoiceAddressList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *InvoiceAddressList) Fetch() error {
 	resources := &invoiceAddressList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newInvoiceAddressList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type TaxInfo struct {
+	recurlyResponse *ResponseMetadata
 
 	// Provides the tax type as "vat" for EU VAT, "usst" for U.S. Sales Tax, or the 2 letter country code for country level tax types like Canada, Australia, New Zealand, Israel, and all non-EU European countries.
 	Type string `json:"type,omitempty"`
@@ -1947,12 +2358,34 @@ type TaxInfo struct {
 	Rate float64 `json:"rate,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *TaxInfo) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *TaxInfo) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type taxInfoList struct {
 	ListMetadata
-	Data []TaxInfo `json:"data"`
+	Data            []TaxInfo `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *taxInfoList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *taxInfoList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// TaxInfoList allows you to paginate TaxInfo objects
 type TaxInfoList struct {
 	client       *Client
 	nextPagePath string
@@ -1961,30 +2394,22 @@ type TaxInfoList struct {
 	Data    []TaxInfo
 }
 
-func newTaxInfoList(client *Client, list *taxInfoList) *TaxInfoList {
-	return &TaxInfoList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list TaxInfoList) NextPage() (*TaxInfoList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *TaxInfoList) Fetch() error {
 	resources := &taxInfoList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newTaxInfoList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type LineItem struct {
+	recurlyResponse *ResponseMetadata
 
 	// Line item ID
 	Id string `json:"id,omitempty"`
@@ -2013,7 +2438,11 @@ type LineItem struct {
 	// Pending line items are charges or credits on an account that have not been applied to an invoice yet. Invoiced line items will always have an `invoice_id` value.
 	State string `json:"state,omitempty"`
 
-	// Category to describe the role of a line item on a legacy invoice: - "charges" refers to charges being billed for on this invoice. - "credits" refers to refund or proration credits. This portion of the invoice can be considered a credit memo. - "applied_credits" refers to previous credits applied to this invoice. See their original_line_item_id to determine where the credit first originated. - "carryforwards" can be ignored. They exist to consume any remaining credit balance. A new credit with the same amount will be created and placed back on the account.
+	// Category to describe the role of a line item on a legacy invoice:
+	// - "charges" refers to charges being billed for on this invoice.
+	// - "credits" refers to refund or proration credits. This portion of the invoice can be considered a credit memo.
+	// - "applied_credits" refers to previous credits applied to this invoice. See their original_line_item_id to determine where the credit first originated.
+	// - "carryforwards" can be ignored. They exist to consume any remaining credit balance. A new credit with the same amount will be created and placed back on the account.
 	LegacyCategory string `json:"legacy_category,omitempty"`
 
 	// Account mini details
@@ -2121,12 +2550,34 @@ type LineItem struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *LineItem) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *LineItem) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type lineItemList struct {
 	ListMetadata
-	Data []LineItem `json:"data"`
+	Data            []LineItem `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *lineItemList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *lineItemList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// LineItemList allows you to paginate LineItem objects
 type LineItemList struct {
 	client       *Client
 	nextPagePath string
@@ -2135,30 +2586,22 @@ type LineItemList struct {
 	Data    []LineItem
 }
 
-func newLineItemList(client *Client, list *lineItemList) *LineItemList {
-	return &LineItemList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list LineItemList) NextPage() (*LineItemList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *LineItemList) Fetch() error {
 	resources := &lineItemList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newLineItemList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type InvoiceCollection struct {
+	recurlyResponse *ResponseMetadata
 
 	// Object type
 	Object string `json:"object,omitempty"`
@@ -2169,12 +2612,34 @@ type InvoiceCollection struct {
 	CreditInvoices []Invoice `json:"credit_invoices,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *InvoiceCollection) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *InvoiceCollection) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type invoiceCollectionList struct {
 	ListMetadata
-	Data []InvoiceCollection `json:"data"`
+	Data            []InvoiceCollection `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *invoiceCollectionList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *invoiceCollectionList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// InvoiceCollectionList allows you to paginate InvoiceCollection objects
 type InvoiceCollectionList struct {
 	client       *Client
 	nextPagePath string
@@ -2183,30 +2648,23 @@ type InvoiceCollectionList struct {
 	Data    []InvoiceCollection
 }
 
-func newInvoiceCollectionList(client *Client, list *invoiceCollectionList) *InvoiceCollectionList {
-	return &InvoiceCollectionList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list InvoiceCollectionList) NextPage() (*InvoiceCollectionList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *InvoiceCollectionList) Fetch() error {
 	resources := &invoiceCollectionList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newInvoiceCollectionList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AccountNote struct {
+	recurlyResponse *ResponseMetadata
+
 	Id string `json:"id,omitempty"`
 
 	// Object type
@@ -2221,12 +2679,34 @@ type AccountNote struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AccountNote) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AccountNote) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type accountNoteList struct {
 	ListMetadata
-	Data []AccountNote `json:"data"`
+	Data            []AccountNote `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *accountNoteList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *accountNoteList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AccountNoteList allows you to paginate AccountNote objects
 type AccountNoteList struct {
 	client       *Client
 	nextPagePath string
@@ -2235,30 +2715,23 @@ type AccountNoteList struct {
 	Data    []AccountNote
 }
 
-func newAccountNoteList(client *Client, list *accountNoteList) *AccountNoteList {
-	return &AccountNoteList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AccountNoteList) NextPage() (*AccountNoteList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AccountNoteList) Fetch() error {
 	resources := &accountNoteList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAccountNoteList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type User struct {
+	recurlyResponse *ResponseMetadata
+
 	Id string `json:"id,omitempty"`
 
 	// Object type
@@ -2277,12 +2750,34 @@ type User struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *User) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *User) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type userList struct {
 	ListMetadata
-	Data []User `json:"data"`
+	Data            []User `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *userList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *userList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// UserList allows you to paginate User objects
 type UserList struct {
 	client       *Client
 	nextPagePath string
@@ -2291,30 +2786,22 @@ type UserList struct {
 	Data    []User
 }
 
-func newUserList(client *Client, list *userList) *UserList {
-	return &UserList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list UserList) NextPage() (*UserList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *UserList) Fetch() error {
 	resources := &userList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newUserList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Subscription struct {
+	recurlyResponse *ResponseMetadata
 
 	// Subscription ID
 	Id string `json:"id,omitempty"`
@@ -2440,12 +2927,34 @@ type Subscription struct {
 	BankAccountAuthorizedAt time.Time `json:"bank_account_authorized_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Subscription) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Subscription) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type subscriptionList struct {
 	ListMetadata
-	Data []Subscription `json:"data"`
+	Data            []Subscription `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *subscriptionList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *subscriptionList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// SubscriptionList allows you to paginate Subscription objects
 type SubscriptionList struct {
 	client       *Client
 	nextPagePath string
@@ -2454,30 +2963,22 @@ type SubscriptionList struct {
 	Data    []Subscription
 }
 
-func newSubscriptionList(client *Client, list *subscriptionList) *SubscriptionList {
-	return &SubscriptionList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list SubscriptionList) NextPage() (*SubscriptionList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *SubscriptionList) Fetch() error {
 	resources := &subscriptionList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newSubscriptionList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type SubscriptionShipping struct {
+	recurlyResponse *ResponseMetadata
 
 	// Object type
 	Object string `json:"object,omitempty"`
@@ -2490,12 +2991,34 @@ type SubscriptionShipping struct {
 	Amount float64 `json:"amount,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *SubscriptionShipping) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *SubscriptionShipping) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type subscriptionShippingList struct {
 	ListMetadata
-	Data []SubscriptionShipping `json:"data"`
+	Data            []SubscriptionShipping `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *subscriptionShippingList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *subscriptionShippingList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// SubscriptionShippingList allows you to paginate SubscriptionShipping objects
 type SubscriptionShippingList struct {
 	client       *Client
 	nextPagePath string
@@ -2504,30 +3027,22 @@ type SubscriptionShippingList struct {
 	Data    []SubscriptionShipping
 }
 
-func newSubscriptionShippingList(client *Client, list *subscriptionShippingList) *SubscriptionShippingList {
-	return &SubscriptionShippingList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list SubscriptionShippingList) NextPage() (*SubscriptionShippingList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *SubscriptionShippingList) Fetch() error {
 	resources := &subscriptionShippingList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newSubscriptionShippingList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type ShippingMethodMini struct {
+	recurlyResponse *ResponseMetadata
 
 	// Shipping Method ID
 	Id string `json:"id,omitempty"`
@@ -2542,12 +3057,34 @@ type ShippingMethodMini struct {
 	Name string `json:"name,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *ShippingMethodMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *ShippingMethodMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type shippingMethodMiniList struct {
 	ListMetadata
-	Data []ShippingMethodMini `json:"data"`
+	Data            []ShippingMethodMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *shippingMethodMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *shippingMethodMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// ShippingMethodMiniList allows you to paginate ShippingMethodMini objects
 type ShippingMethodMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -2556,30 +3093,22 @@ type ShippingMethodMiniList struct {
 	Data    []ShippingMethodMini
 }
 
-func newShippingMethodMiniList(client *Client, list *shippingMethodMiniList) *ShippingMethodMiniList {
-	return &ShippingMethodMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list ShippingMethodMiniList) NextPage() (*ShippingMethodMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *ShippingMethodMiniList) Fetch() error {
 	resources := &shippingMethodMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newShippingMethodMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CouponRedemptionMini struct {
+	recurlyResponse *ResponseMetadata
 
 	// Coupon Redemption ID
 	Id string `json:"id,omitempty"`
@@ -2599,12 +3128,34 @@ type CouponRedemptionMini struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CouponRedemptionMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CouponRedemptionMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type couponRedemptionMiniList struct {
 	ListMetadata
-	Data []CouponRedemptionMini `json:"data"`
+	Data            []CouponRedemptionMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *couponRedemptionMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *couponRedemptionMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CouponRedemptionMiniList allows you to paginate CouponRedemptionMini objects
 type CouponRedemptionMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -2613,30 +3164,22 @@ type CouponRedemptionMiniList struct {
 	Data    []CouponRedemptionMini
 }
 
-func newCouponRedemptionMiniList(client *Client, list *couponRedemptionMiniList) *CouponRedemptionMiniList {
-	return &CouponRedemptionMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CouponRedemptionMiniList) NextPage() (*CouponRedemptionMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CouponRedemptionMiniList) Fetch() error {
 	resources := &couponRedemptionMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCouponRedemptionMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CouponMini struct {
+	recurlyResponse *ResponseMetadata
 
 	// Coupon ID
 	Id string `json:"id,omitempty"`
@@ -2653,7 +3196,8 @@ type CouponMini struct {
 	// Indicates if the coupon is redeemable, and if it is not, why.
 	State string `json:"state,omitempty"`
 
-	// Details of the discount a coupon applies. Will contain a `type` property and one of the following properties: `percent`, `fixed`, `trial`.
+	// Details of the discount a coupon applies. Will contain a `type`
+	// property and one of the following properties: `percent`, `fixed`, `trial`.
 	Discount CouponDiscount `json:"discount,omitempty"`
 
 	// Whether the coupon is "single_code" or "bulk". Bulk coupons will require a `unique_code_template` and will generate unique codes through the `/generate` endpoint.
@@ -2663,12 +3207,34 @@ type CouponMini struct {
 	ExpiredAt time.Time `json:"expired_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CouponMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CouponMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type couponMiniList struct {
 	ListMetadata
-	Data []CouponMini `json:"data"`
+	Data            []CouponMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *couponMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *couponMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CouponMiniList allows you to paginate CouponMini objects
 type CouponMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -2677,30 +3243,22 @@ type CouponMiniList struct {
 	Data    []CouponMini
 }
 
-func newCouponMiniList(client *Client, list *couponMiniList) *CouponMiniList {
-	return &CouponMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CouponMiniList) NextPage() (*CouponMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CouponMiniList) Fetch() error {
 	resources := &couponMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCouponMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type SubscriptionChange struct {
+	recurlyResponse *ResponseMetadata
 
 	// The ID of the Subscription Change.
 	Id string `json:"id,omitempty"`
@@ -2748,12 +3306,34 @@ type SubscriptionChange struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *SubscriptionChange) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *SubscriptionChange) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type subscriptionChangeList struct {
 	ListMetadata
-	Data []SubscriptionChange `json:"data"`
+	Data            []SubscriptionChange `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *subscriptionChangeList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *subscriptionChangeList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// SubscriptionChangeList allows you to paginate SubscriptionChange objects
 type SubscriptionChangeList struct {
 	client       *Client
 	nextPagePath string
@@ -2762,30 +3342,22 @@ type SubscriptionChangeList struct {
 	Data    []SubscriptionChange
 }
 
-func newSubscriptionChangeList(client *Client, list *subscriptionChangeList) *SubscriptionChangeList {
-	return &SubscriptionChangeList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list SubscriptionChangeList) NextPage() (*SubscriptionChangeList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *SubscriptionChangeList) Fetch() error {
 	resources := &subscriptionChangeList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newSubscriptionChangeList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type SubscriptionAddOn struct {
+	recurlyResponse *ResponseMetadata
 
 	// Subscription Add-on ID
 	Id string `json:"id,omitempty"`
@@ -2815,12 +3387,34 @@ type SubscriptionAddOn struct {
 	ExpiredAt time.Time `json:"expired_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *SubscriptionAddOn) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *SubscriptionAddOn) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type subscriptionAddOnList struct {
 	ListMetadata
-	Data []SubscriptionAddOn `json:"data"`
+	Data            []SubscriptionAddOn `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *subscriptionAddOnList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *subscriptionAddOnList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// SubscriptionAddOnList allows you to paginate SubscriptionAddOn objects
 type SubscriptionAddOnList struct {
 	client       *Client
 	nextPagePath string
@@ -2829,30 +3423,22 @@ type SubscriptionAddOnList struct {
 	Data    []SubscriptionAddOn
 }
 
-func newSubscriptionAddOnList(client *Client, list *subscriptionAddOnList) *SubscriptionAddOnList {
-	return &SubscriptionAddOnList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list SubscriptionAddOnList) NextPage() (*SubscriptionAddOnList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *SubscriptionAddOnList) Fetch() error {
 	resources := &subscriptionAddOnList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newSubscriptionAddOnList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AddOnMini struct {
+	recurlyResponse *ResponseMetadata
 
 	// Add-on ID
 	Id string `json:"id,omitempty"`
@@ -2876,12 +3462,34 @@ type AddOnMini struct {
 	AccountingCode string `json:"accounting_code,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AddOnMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AddOnMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type addOnMiniList struct {
 	ListMetadata
-	Data []AddOnMini `json:"data"`
+	Data            []AddOnMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *addOnMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *addOnMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AddOnMiniList allows you to paginate AddOnMini objects
 type AddOnMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -2890,30 +3498,22 @@ type AddOnMiniList struct {
 	Data    []AddOnMini
 }
 
-func newAddOnMiniList(client *Client, list *addOnMiniList) *AddOnMiniList {
-	return &AddOnMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AddOnMiniList) NextPage() (*AddOnMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AddOnMiniList) Fetch() error {
 	resources := &addOnMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAddOnMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type UniqueCouponCode struct {
+	recurlyResponse *ResponseMetadata
 
 	// Unique Coupon Code ID
 	Id string `json:"id,omitempty"`
@@ -2940,12 +3540,34 @@ type UniqueCouponCode struct {
 	ExpiredAt time.Time `json:"expired_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *UniqueCouponCode) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *UniqueCouponCode) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type uniqueCouponCodeList struct {
 	ListMetadata
-	Data []UniqueCouponCode `json:"data"`
+	Data            []UniqueCouponCode `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *uniqueCouponCodeList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *uniqueCouponCodeList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// UniqueCouponCodeList allows you to paginate UniqueCouponCode objects
 type UniqueCouponCodeList struct {
 	client       *Client
 	nextPagePath string
@@ -2954,30 +3576,22 @@ type UniqueCouponCodeList struct {
 	Data    []UniqueCouponCode
 }
 
-func newUniqueCouponCodeList(client *Client, list *uniqueCouponCodeList) *UniqueCouponCodeList {
-	return &UniqueCouponCodeList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list UniqueCouponCodeList) NextPage() (*UniqueCouponCodeList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *UniqueCouponCodeList) Fetch() error {
 	resources := &uniqueCouponCodeList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newUniqueCouponCodeList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type CustomFieldDefinition struct {
+	recurlyResponse *ResponseMetadata
 
 	// Custom field definition ID
 	Id string `json:"id,omitempty"`
@@ -2991,7 +3605,11 @@ type CustomFieldDefinition struct {
 	// Used by the API to identify the field or reading and writing. The name can only be used once per Recurly object type.
 	Name string `json:"name,omitempty"`
 
-	// The access control applied inside Recurly's admin UI: - `api_only` - No one will be able to view or edit this field's data via the admin UI. - `read_only` - Users with the Customers role will be able to view this field's data via the admin UI, but   editing will only be available via the API. - `write` - Users with the Customers role will be able to view and edit this field's data via the admin UI.
+	// The access control applied inside Recurly's admin UI:
+	// - `api_only` - No one will be able to view or edit this field's data via the admin UI.
+	// - `read_only` - Users with the Customers role will be able to view this field's data via the admin UI, but
+	//   editing will only be available via the API.
+	// - `write` - Users with the Customers role will be able to view and edit this field's data via the admin UI.
 	UserAccess string `json:"user_access,omitempty"`
 
 	// Used to label the field when viewing and editing the field in Recurly's admin UI.
@@ -3010,12 +3628,34 @@ type CustomFieldDefinition struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *CustomFieldDefinition) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *CustomFieldDefinition) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type customFieldDefinitionList struct {
 	ListMetadata
-	Data []CustomFieldDefinition `json:"data"`
+	Data            []CustomFieldDefinition `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *customFieldDefinitionList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *customFieldDefinitionList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// CustomFieldDefinitionList allows you to paginate CustomFieldDefinition objects
 type CustomFieldDefinitionList struct {
 	client       *Client
 	nextPagePath string
@@ -3024,30 +3664,22 @@ type CustomFieldDefinitionList struct {
 	Data    []CustomFieldDefinition
 }
 
-func newCustomFieldDefinitionList(client *Client, list *customFieldDefinitionList) *CustomFieldDefinitionList {
-	return &CustomFieldDefinitionList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list CustomFieldDefinitionList) NextPage() (*CustomFieldDefinitionList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *CustomFieldDefinitionList) Fetch() error {
 	resources := &customFieldDefinitionList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newCustomFieldDefinitionList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Item struct {
+	recurlyResponse *ResponseMetadata
 
 	// Item ID
 	Id string `json:"id,omitempty"`
@@ -3098,12 +3730,34 @@ type Item struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Item) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Item) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type itemList struct {
 	ListMetadata
-	Data []Item `json:"data"`
+	Data            []Item `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *itemList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *itemList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// ItemList allows you to paginate Item objects
 type ItemList struct {
 	client       *Client
 	nextPagePath string
@@ -3112,30 +3766,22 @@ type ItemList struct {
 	Data    []Item
 }
 
-func newItemList(client *Client, list *itemList) *ItemList {
-	return &ItemList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list ItemList) NextPage() (*ItemList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *ItemList) Fetch() error {
 	resources := &itemList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newItemList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Pricing struct {
+	recurlyResponse *ResponseMetadata
 
 	// 3-letter ISO 4217 currency code.
 	Currency string `json:"currency,omitempty"`
@@ -3144,12 +3790,34 @@ type Pricing struct {
 	UnitAmount float64 `json:"unit_amount,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Pricing) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Pricing) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type pricingList struct {
 	ListMetadata
-	Data []Pricing `json:"data"`
+	Data            []Pricing `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *pricingList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *pricingList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// PricingList allows you to paginate Pricing objects
 type PricingList struct {
 	client       *Client
 	nextPagePath string
@@ -3158,39 +3826,54 @@ type PricingList struct {
 	Data    []Pricing
 }
 
-func newPricingList(client *Client, list *pricingList) *PricingList {
-	return &PricingList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list PricingList) NextPage() (*PricingList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *PricingList) Fetch() error {
 	resources := &pricingList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newPricingList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type BinaryFile struct {
+	recurlyResponse *ResponseMetadata
+
 	Data string `json:"data,omitempty"`
+}
+
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *BinaryFile) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *BinaryFile) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
 }
 
 // internal struct for deserializing accounts
 type binaryFileList struct {
 	ListMetadata
-	Data []BinaryFile `json:"data"`
+	Data            []BinaryFile `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *binaryFileList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *binaryFileList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// BinaryFileList allows you to paginate BinaryFile objects
 type BinaryFileList struct {
 	client       *Client
 	nextPagePath string
@@ -3199,30 +3882,22 @@ type BinaryFileList struct {
 	Data    []BinaryFile
 }
 
-func newBinaryFileList(client *Client, list *binaryFileList) *BinaryFileList {
-	return &BinaryFileList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list BinaryFileList) NextPage() (*BinaryFileList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *BinaryFileList) Fetch() error {
 	resources := &binaryFileList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newBinaryFileList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type Plan struct {
+	recurlyResponse *ResponseMetadata
 
 	// Plan ID
 	Id string `json:"id,omitempty"`
@@ -3294,12 +3969,34 @@ type Plan struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *Plan) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *Plan) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type planList struct {
 	ListMetadata
-	Data []Plan `json:"data"`
+	Data            []Plan `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *planList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *planList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// PlanList allows you to paginate Plan objects
 type PlanList struct {
 	client       *Client
 	nextPagePath string
@@ -3308,30 +4005,22 @@ type PlanList struct {
 	Data    []Plan
 }
 
-func newPlanList(client *Client, list *planList) *PlanList {
-	return &PlanList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list PlanList) NextPage() (*PlanList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *PlanList) Fetch() error {
 	resources := &planList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newPlanList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type PlanPricing struct {
+	recurlyResponse *ResponseMetadata
 
 	// 3-letter ISO 4217 currency code.
 	Currency string `json:"currency,omitempty"`
@@ -3343,12 +4032,34 @@ type PlanPricing struct {
 	UnitAmount float64 `json:"unit_amount,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *PlanPricing) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *PlanPricing) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type planPricingList struct {
 	ListMetadata
-	Data []PlanPricing `json:"data"`
+	Data            []PlanPricing `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *planPricingList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *planPricingList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// PlanPricingList allows you to paginate PlanPricing objects
 type PlanPricingList struct {
 	client       *Client
 	nextPagePath string
@@ -3357,30 +4068,22 @@ type PlanPricingList struct {
 	Data    []PlanPricing
 }
 
-func newPlanPricingList(client *Client, list *planPricingList) *PlanPricingList {
-	return &PlanPricingList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list PlanPricingList) NextPage() (*PlanPricingList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *PlanPricingList) Fetch() error {
 	resources := &planPricingList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newPlanPricingList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type PlanHostedPages struct {
+	recurlyResponse *ResponseMetadata
 
 	// URL to redirect to after signup on the hosted payment pages.
 	SuccessUrl string `json:"success_url,omitempty"`
@@ -3395,12 +4098,34 @@ type PlanHostedPages struct {
 	DisplayQuantity bool `json:"display_quantity,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *PlanHostedPages) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *PlanHostedPages) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type planHostedPagesList struct {
 	ListMetadata
-	Data []PlanHostedPages `json:"data"`
+	Data            []PlanHostedPages `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *planHostedPagesList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *planHostedPagesList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// PlanHostedPagesList allows you to paginate PlanHostedPages objects
 type PlanHostedPagesList struct {
 	client       *Client
 	nextPagePath string
@@ -3409,30 +4134,22 @@ type PlanHostedPagesList struct {
 	Data    []PlanHostedPages
 }
 
-func newPlanHostedPagesList(client *Client, list *planHostedPagesList) *PlanHostedPagesList {
-	return &PlanHostedPagesList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list PlanHostedPagesList) NextPage() (*PlanHostedPagesList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *PlanHostedPagesList) Fetch() error {
 	resources := &planHostedPagesList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newPlanHostedPagesList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AddOn struct {
+	recurlyResponse *ResponseMetadata
 
 	// Add-on ID
 	Id string `json:"id,omitempty"`
@@ -3489,12 +4206,34 @@ type AddOn struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AddOn) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AddOn) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type addOnList struct {
 	ListMetadata
-	Data []AddOn `json:"data"`
+	Data            []AddOn `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *addOnList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *addOnList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AddOnList allows you to paginate AddOn objects
 type AddOnList struct {
 	client       *Client
 	nextPagePath string
@@ -3503,30 +4242,22 @@ type AddOnList struct {
 	Data    []AddOn
 }
 
-func newAddOnList(client *Client, list *addOnList) *AddOnList {
-	return &AddOnList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AddOnList) NextPage() (*AddOnList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AddOnList) Fetch() error {
 	resources := &addOnList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAddOnList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type AddOnPricing struct {
+	recurlyResponse *ResponseMetadata
 
 	// 3-letter ISO 4217 currency code.
 	Currency string `json:"currency,omitempty"`
@@ -3535,12 +4266,34 @@ type AddOnPricing struct {
 	UnitAmount float64 `json:"unit_amount,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *AddOnPricing) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *AddOnPricing) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type addOnPricingList struct {
 	ListMetadata
-	Data []AddOnPricing `json:"data"`
+	Data            []AddOnPricing `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *addOnPricingList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *addOnPricingList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// AddOnPricingList allows you to paginate AddOnPricing objects
 type AddOnPricingList struct {
 	client       *Client
 	nextPagePath string
@@ -3549,30 +4302,22 @@ type AddOnPricingList struct {
 	Data    []AddOnPricing
 }
 
-func newAddOnPricingList(client *Client, list *addOnPricingList) *AddOnPricingList {
-	return &AddOnPricingList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list AddOnPricingList) NextPage() (*AddOnPricingList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *AddOnPricingList) Fetch() error {
 	resources := &addOnPricingList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newAddOnPricingList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type ItemMini struct {
+	recurlyResponse *ResponseMetadata
 
 	// Item ID
 	Id string `json:"id,omitempty"`
@@ -3593,12 +4338,34 @@ type ItemMini struct {
 	Description string `json:"description,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *ItemMini) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *ItemMini) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type itemMiniList struct {
 	ListMetadata
-	Data []ItemMini `json:"data"`
+	Data            []ItemMini `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *itemMiniList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *itemMiniList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// ItemMiniList allows you to paginate ItemMini objects
 type ItemMiniList struct {
 	client       *Client
 	nextPagePath string
@@ -3607,30 +4374,22 @@ type ItemMiniList struct {
 	Data    []ItemMini
 }
 
-func newItemMiniList(client *Client, list *itemMiniList) *ItemMiniList {
-	return &ItemMiniList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list ItemMiniList) NextPage() (*ItemMiniList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *ItemMiniList) Fetch() error {
 	resources := &itemMiniList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newItemMiniList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
 
 type ShippingMethod struct {
+	recurlyResponse *ResponseMetadata
 
 	// Shipping Method ID
 	Id string `json:"id,omitempty"`
@@ -3644,7 +4403,16 @@ type ShippingMethod struct {
 	// The name of the shipping method displayed to customers.
 	Name string `json:"name,omitempty"`
 
-	// Used by Avalara, Vertex, and Recurly’s built-in tax feature. The tax code values are specific to each tax system. If you are using Recurly’s built-in taxes the values are:  - `FR` – Common Carrier FOB Destination - `FR022000` – Common Carrier FOB Origin - `FR020400` – Non Common Carrier FOB Destination - `FR020500` – Non Common Carrier FOB Origin - `FR010100` – Delivery by Company Vehicle Before Passage of Title - `FR010200` – Delivery by Company Vehicle After Passage of Title - `NT` – Non-Taxable
+	// Used by Avalara, Vertex, and Recurly’s built-in tax feature. The tax
+	// code values are specific to each tax system. If you are using Recurly’s
+	// built-in taxes the values are:
+	// - `FR` – Common Carrier FOB Destination
+	// - `FR022000` – Common Carrier FOB Origin
+	// - `FR020400` – Non Common Carrier FOB Destination
+	// - `FR020500` – Non Common Carrier FOB Origin
+	// - `FR010100` – Delivery by Company Vehicle Before Passage of Title
+	// - `FR010200` – Delivery by Company Vehicle After Passage of Title
+	// - `NT` – Non-Taxable
 	TaxCode string `json:"tax_code,omitempty"`
 
 	// Created at
@@ -3657,12 +4425,34 @@ type ShippingMethod struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *ShippingMethod) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *ShippingMethod) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
 // internal struct for deserializing accounts
 type shippingMethodList struct {
 	ListMetadata
-	Data []ShippingMethod `json:"data"`
+	Data            []ShippingMethod `json:"data"`
+	recurlyResponse *ResponseMetadata
 }
 
+// GetResponse returns the ResponseMetadata that generated this resource
+func (resource *shippingMethodList) GetResponse() *ResponseMetadata {
+	return resource.recurlyResponse
+}
+
+// setResponse sets the ResponseMetadata that generated this resource
+func (resource *shippingMethodList) setResponse(res *ResponseMetadata) {
+	resource.recurlyResponse = res
+}
+
+// ShippingMethodList allows you to paginate ShippingMethod objects
 type ShippingMethodList struct {
 	client       *Client
 	nextPagePath string
@@ -3671,25 +4461,16 @@ type ShippingMethodList struct {
 	Data    []ShippingMethod
 }
 
-func newShippingMethodList(client *Client, list *shippingMethodList) *ShippingMethodList {
-	return &ShippingMethodList{
-		client:       client,
-		nextPagePath: list.Next,
-		HasMore:      list.HasMore,
-		Data:         list.Data,
-	}
-}
-
-// NextPage returns the next page of resources
-func (list ShippingMethodList) NextPage() (*ShippingMethodList, error) {
-	if !list.HasMore {
-		return nil, nil
-	}
-
+// Fetch fetches the next page of data into the `Data` property
+func (list *ShippingMethodList) Fetch() error {
 	resources := &shippingMethodList{}
 	err := list.client.Call(http.MethodGet, list.nextPagePath, nil, resources)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return newShippingMethodList(list.client, resources), nil
+	// copy over properties from the response
+	list.nextPagePath = resources.Next
+	list.HasMore = resources.HasMore
+	list.Data = resources.Data
+	return nil
 }
